@@ -1,0 +1,35 @@
+{
+  "name": "katniss",
+  "version": "1.0.0",
+  "description": "A smart way to analyse your files",
+  "main": "server.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "eslint": "^4.15.0",
+    "express": "^4.16.2",
+    "underscore": "^1.8.3",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "git-guppy": "^2.1.0",
+    "gulp": "^3.9.1",
+    "gulp-env": "^0.4.0",
+    "gulp-filter": "^5.0.0",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-jshint": "^2.0.4",
+    "gulp-mocha": "^3.0.1",
+    "gulp-nodemon": "^2.2.1",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "mocha": "^4.0.0",
+    "sinon": "^4.0.1"
+  }
+}
