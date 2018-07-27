@@ -9,12 +9,12 @@
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "eslint": "^4.15.0",
-    "express": "^4.16.2",
-    "underscore": "^1.8.3",
-    "uuid": "^3.2.1"
+    "eslint": "^4.19.1",
+    "express": "^4.16.3",
+    "underscore": "^1.9.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -30,6 +30,6 @@
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "mocha": "^4.0.0",
-    "sinon": "^4.0.1"
+    "sinon": "^4.5.0"
   }
 }
