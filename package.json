@@ -4,7 +4,7 @@
   "description": "A smart way to analyse your files",
   "main": "server.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "nyc gulp test"
   },
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
   "license": "MIT",
@@ -32,6 +32,7 @@
     "jshint-stylish": "^2.2.1",
     "minimatch": "^3.0.4",
     "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
     "sinon": "^6.3.3"
   }
 }

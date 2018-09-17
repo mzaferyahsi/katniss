@@ -18,7 +18,7 @@ gulp.task('_pre-test', function () {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task('_test', ['_pre-test'], function () {
+gulp.task('_test', gulp.series('_pre-test', function () {
     return gulp.src(['test/**/*.js'])
         .pipe(mocha())
         // Creating the reports after tests ran
@@ -41,7 +41,7 @@ gulp.task('_test', ['_pre-test'], function () {
                 },
             }
         }));
-});
+}));
 
 
-gulp.task('test', ['_lint', '_test']);
+gulp.task('test', gulp.series('_lint', '_test'));
