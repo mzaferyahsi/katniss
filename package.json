@@ -21,15 +21,16 @@
     "chai-http": "^4.2.0",
     "git-guppy": "^2.1.0",
     "growl": "^1.10.5",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-env": "^0.4.0",
     "gulp-filter": "^5.0.0",
     "gulp-istanbul": "^1.1.1",
     "gulp-jshint": "^2.0.4",
     "gulp-mocha": "^6.0.0",
     "gulp-nodemon": "^2.2.1",
-    "jshint": "^2.9.4",
+    "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
+    "minimatch": "^3.0.4",
     "mocha": "^5.2.0",
     "sinon": "^6.3.3"
   }
