@@ -28,6 +28,7 @@
     "eslint": "^5.8.0",
     "eslint-config-netflix": "^2.0.0",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-sonarjs": "^0.2.0",
     "gulp": "^4.0.0",
     "gulp-eslint": "^5.0.0",
     "gulp-istanbul": "^1.1.1",

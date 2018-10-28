@@ -2,7 +2,8 @@
   "env": {
     "commonjs": true
   },
-  "extends": ["netflix"],
+  "plugins": ["sonarjs"],
+  "extends": ["netflix", "plugin:sonarjs/recommended"],
   "rules": {
     "semi": 0
   }
