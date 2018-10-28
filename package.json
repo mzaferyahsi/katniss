@@ -4,7 +4,7 @@
   "description": "A smart way to analyse your files",
   "main": "server.js",
   "scripts": {
-    "test": "gulp test",
+    "test": "nyc gulp test",
     "lint": "eslint ."
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
@@ -35,6 +35,7 @@
     "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
     "minimatch": "^3.0.4",
+    "nyc": "^13.1.0",
     "sinon": "^7.1.0"
   }
 }
