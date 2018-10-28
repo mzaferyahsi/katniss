@@ -4,7 +4,7 @@
   "description": "A smart way to analyse your files",
   "main": "server.js",
   "scripts": {
-    "test": "nyc gulp test",
+    "test": "nyc gulp test && nyc report --reporter=lcov",
     "lint": "eslint ."
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
