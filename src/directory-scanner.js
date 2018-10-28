@@ -17,6 +17,8 @@ scanner.scan = directoryPath => new Promise((resolve, reject) => {
 
   if (!fs.existsSync(resolvedPath)) 
     return reject(new Error('File does not exists.'));
+  else if(!fs.lstatSync(resolvedPath).isDirectory())
+    return reject(new Error('Given path does not resolve as a directory.'));
   
 
   return resolve([resolvedPath]);
