@@ -24,6 +24,7 @@
     "babel-eslint": "^10.0.1",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
+    "coveralls": "^3.0.2",
     "eslint": "^5.8.0",
     "eslint-config-netflix": "^2.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -37,5 +38,19 @@
     "minimatch": "^3.0.4",
     "nyc": "^13.1.0",
     "sinon": "^7.1.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "statements": 80,
+    "branches": 75,
+    "lines": 80,
+    "functions": 80,
+    "reporters": [
+      "lcov"
+    ],
+    "include": [
+      "src/**/*.js"
+    ]
   }
 }
