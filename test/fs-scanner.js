@@ -2,7 +2,8 @@
 /* eslint no-unused-expressions: "off" */
 
 const chai = require('chai'),
-  scanner = require('../src/directory-scanner'),
+  scanner = require('../src/fs-scanner'),
+  path = require('path'),
   { expect } = chai;
 
 describe('Directory scanner', () => {
@@ -35,12 +36,13 @@ describe('Directory scanner', () => {
   });
 
   it('should scan directory', (done) => {
-    const result = scanner.scan(__dirname);
+    const parentDir = path.join(__dirname, '/../src');
+    const result = scanner.scan(parentDir);
 
     result.then((files) => {
       expect(files).to.be.not.null;
       expect(files.length).to.be.gt(0);
-      expect(files[0]).to.be.eq(__dirname);
+      expect(files[0]).to.be.eq(parentDir);
       done();
     }).catch((message) => {
       done(message);
