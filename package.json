@@ -11,11 +11,8 @@
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.1.2",
-    "babel-register": "^6.26.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "eslint-config-node": "^4.0.0",
     "express": "^4.16.4",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2"
