@@ -1,29 +1,25 @@
 /* jshint esversion: 6 */
-/*eslint no-sync: "off"*/
-const scanner = {};
-const fs = import("fs"),
-    path = import("path");
+/* eslint no-sync: "off" */
+const fs = require('fs'),
+  path = require('path'),
+  scanner = {};
 
 
-scanner.resolvePath = function (_path) {
-    if (_path[0] === "~") {
-        return path.join(process.env.HOME, _path.slice(1));
-    }
-    return path.resolve(path.normalize(_path));
+scanner.resolvePath = (_path) => {
+  if (_path[0] === '~') 
+    return path.join(process.env.HOME, _path.slice(1));
+  
+  return path.resolve(path.normalize(_path));
 };
 
-scanner.scan = function (directoryPath) {
-    return new Promise(((resolve, reject) => {
-        const resolvedPath = scanner.resolvePath(directoryPath);
+scanner.scan = directoryPath => new Promise((resolve, reject) => {
+  const resolvedPath = scanner.resolvePath(directoryPath);
 
-        if (!fs.existsSync(resolvedPath)) {
-            reject("File does not exists.");
-            return;
-        }
+  if (!fs.existsSync(resolvedPath)) 
+    return reject(new Error('File does not exists.'));
+  
 
-        resolve([resolvedPath]);
-    }));
-};
+  return resolve([resolvedPath]);
+});
 
-
-export { scanner as default };
+module.exports = scanner;

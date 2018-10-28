@@ -1,45 +1,49 @@
 /* global it, describe */
-const chai = import("chai"),
-    expect = chai.expect,
-    scanner = import("../src/directory-scanner");
+/* eslint no-unused-expressions: "off" */
 
-describe( "Directory scanner", () => {
-    it( "should resolve path", ( done ) => {
-        const resolvedPath = scanner.resolvePath( "/etc/../etc" );
+const chai = require('chai'),
+  scanner = require('../src/directory-scanner'),
+  { expect } = chai;
 
-        expect( resolvedPath ).to.be.eq( "/etc" );
-        done();
-    } );
+describe('Directory scanner', () => {
+  it('should resolve path', (done) => {
+    const resolvedPath = scanner.resolvePath('/etc/../etc');
 
-    it( "should resolve home path", ( done ) => {
-        const resolvedPath = scanner.resolvePath( "~/" );
+    expect(resolvedPath).to.be.eq('/etc');
+    done();
+  });
 
-        expect( resolvedPath ).to.be.eq( `${process.env.HOME }/` );
-        done();
-    } );
+  it('should resolve home path', (done) => {
+    const resolvedPath = scanner.resolvePath('~/');
 
-    it( "should fail scanning non-existent directory", ( done ) => {
-        const nonExistentPath = "/i-do-not-exist",
-            result = scanner.scan( nonExistentPath );
+    expect(resolvedPath).to.be.eq(`${process.env.HOME}/`);
+    done();
+  });
 
-        result.then( () => {
-            done( "Failed on test" );
-        } ).catch( ( message ) => {
-            expect( message ).to.be.not.null();
-            done();
-        } );
-    } );
+  it('should fail scanning non-existent directory', (done) => {
+    const nonExistentPath = '/i-do-not-exist';
 
-    it( "should scan directory", ( done ) => {
-        const result = scanner.scan( __dirname );
 
-        result.then( ( files ) => {
-            expect( files ).to.be.not.null();
-            expect( files.length ).to.be.gt( 0 );
-            expect( files[ 0 ] ).to.be.eq( __dirname );
-            done();
-        } ).catch( ( message ) => {
-            done( message );
-        } );
-    } );
-} );
+    const result = scanner.scan(nonExistentPath);
+
+    result.then(() => {
+      done('Failed on test');
+    }).catch((message) => {
+      expect(message).to.be.not.null;
+      done();
+    });
+  });
+
+  it('should scan directory', (done) => {
+    const result = scanner.scan(__dirname);
+
+    result.then((files) => {
+      expect(files).to.be.not.null;
+      expect(files.length).to.be.gt(0);
+      expect(files[0]).to.be.eq(__dirname);
+      done();
+    }).catch((message) => {
+      done(message);
+    });
+  });
+});
