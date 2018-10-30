@@ -12,6 +12,31 @@ function pushArrays (source, items) {
   return source;
 }
 
+function scanDirectory(filePath) {
+  return new Promise((resolve, reject) => {
+    fsPromises.readdir(filePath).then(subFiles => {
+      const subFilePromisses = subFiles.map(subFile => {
+        const fullPath = path.join(filePath, subFile);
+        return scanner.scan(fullPath).then(subFileScanResults => {
+          return subFileScanResults;
+        }).catch((err) => {
+          throw err;
+        });
+      });
+
+      Promise.all(subFilePromisses).then((results) => {
+        let discovered = [];
+        results.forEach(item => {
+          discovered = pushArrays(discovered, item);
+        });
+        resolve(results);
+      });
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
 scanner.resolvePath = (_path) => {
   if (_path[0] === '~')
     return path.join(process.env.HOME, _path.slice(1));
@@ -53,30 +78,5 @@ scanner.scan = directoryPath => new Promise((resolve, reject) => {
   });
 
 });
-
-function scanDirectory(filePath) {
-  return new Promise((resolve, reject) => {
-    fsPromises.readdir(filePath).then(subFiles => {
-      const subFilePromisses = subFiles.map(subFile => {
-        const fullPath = path.join(filePath, subFile);
-        return scanner.scan(fullPath).then(subFileScanResults => {
-          return subFileScanResults;
-        }).catch((err) => {
-          throw err;
-        });
-      });
-
-      Promise.all(subFilePromisses).then((results) => {
-        let discovered = [];
-        results.forEach(item => {
-          discovered = pushArrays(discovered, item);
-        });
-        resolve(results);
-      });
-    }).catch((err) => {
-      reject(err);
-    });
-  });
-}
 
 module.exports = scanner;

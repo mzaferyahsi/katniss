@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions: "off" */
 
 const chai = require('chai'),
-  scanner = require('../src/fs-scanner'),
+  scanner = require('../../src/scanners/fs-scanner'),
   path = require('path'),
   { expect } = chai;
 
@@ -36,7 +36,7 @@ describe('Directory scanner', () => {
   });
 
   it('should scan directory', (done) => {
-    const parentDir = path.join(__dirname, '/../src');
+    const parentDir = path.join(__dirname, '/../../src');
     const result = scanner.scan(parentDir);
 
     result.then((files) => {
