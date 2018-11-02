@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "nyc gulp test && nyc report --reporter=lcov",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "cd depencencies && docker-compose up -d && cd ../src && nodemon index.js"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
