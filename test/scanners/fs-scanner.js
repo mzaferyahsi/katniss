@@ -1,9 +1,11 @@
 /* global it, describe */
 /* eslint no-unused-expressions: "off" */
+/* eslint sonarjs/no-identical-functions: "off" */
 
 const chai = require('chai'),
   scanner = require('../../src/scanners/fs-scanner'),
   path = require('path'),
+  sinon = require('sinon'),
   { expect } = chai;
 
 describe('Filesystem scanner', () => {
@@ -46,6 +48,51 @@ describe('Filesystem scanner', () => {
       done();
     }).catch((message) => {
       done(message);
+    });
+  });
+
+  it('should fail reading directory contents', done => {
+    const stub = sinon.stub(scanner.fsPromises, 'readdir');
+    stub.rejects(new Error('ERROR!'));
+    const result = scanner.discover(__dirname);
+
+    result.then(() => {
+      done('Unable to handle error');
+    }).catch((message) => {
+      expect(message).to.be.not.null;
+      expect(message).to.be.a('Error');
+      stub.restore();
+      done();
+    });
+  });
+
+  it('should fail reading file', done => {
+    const stub = sinon.stub(scanner.fsPromises, 'access');
+    stub.rejects(new Error('ERROR!'));
+    const result = scanner.discover(__dirname);
+
+    result.then(() => {
+      done('Unable to handle error');
+    }).catch((message) => {
+      expect(message).to.be.not.null;
+      expect(message).to.be.a('Error');
+      stub.restore();
+      done();
+    });
+  });
+
+  it('should fail reading statistics', done => {
+    const stub = sinon.stub(scanner.fsPromises, 'lstat');
+    stub.rejects(new Error('ERROR!'));
+    const result = scanner.discover(__dirname);
+
+    result.then(() => {
+      done('Unable to handle error');
+    }).catch((message) => {
+      expect(message).to.be.not.null;
+      expect(message).to.be.a('Error');
+      stub.restore();
+      done();
     });
   });
 });
