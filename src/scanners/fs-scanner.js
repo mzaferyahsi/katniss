@@ -3,7 +3,7 @@
 const fs = require('fs'),
   fsPromises = fs.promises,
   path = require('path'),
-  scanner = {};
+  discoverer = {};
 
 function pushArrays (source, items) {
   const toPush = source.concat.apply([], items);
@@ -12,12 +12,12 @@ function pushArrays (source, items) {
   return source;
 }
 
-function scanDirectory(filePath) {
+function discoverDirectory(filePath) {
   return new Promise((resolve, reject) => {
     fsPromises.readdir(filePath).then(subFiles => {
       const subFilePromisses = subFiles.map(subFile => {
         const fullPath = path.join(filePath, subFile);
-        return scanner.scan(fullPath).then(subFileScanResults => {
+        return discoverer.discover(fullPath).then(subFileScanResults => {
           return subFileScanResults;
         }).catch((err) => {
           throw err;
@@ -37,14 +37,14 @@ function scanDirectory(filePath) {
   });
 }
 
-scanner.resolvePath = (_path) => {
+discoverer.resolvePath = (_path) => {
   if (_path[0] === '~')
     return path.join(process.env.HOME, _path.slice(1));
 
   return path.resolve(path.normalize(_path));
 };
 
-scanner.fsExists = (filePath) => new Promise((resolve, reject) => {
+discoverer.fsExists = (filePath) => new Promise((resolve, reject) => {
   fsPromises.access(filePath, fs.constants.R_OK).then(() => {
     resolve();
   }).catch((err) => {
@@ -52,16 +52,16 @@ scanner.fsExists = (filePath) => new Promise((resolve, reject) => {
   });
 });
 
-scanner.scan = directoryPath => new Promise((resolve, reject) => {
-  const resolvedPath = scanner.resolvePath(directoryPath);
+discoverer.discover = directoryPath => new Promise((resolve, reject) => {
+  const resolvedPath = discoverer.resolvePath(directoryPath);
 
-  scanner.fsExists(resolvedPath).then(() => {
+  discoverer.fsExists(resolvedPath).then(() => {
     fsPromises.lstat(resolvedPath).then(stats => {
       let _filePaths = [];
       _filePaths.push(resolvedPath);
 
       if (stats.isDirectory())
-        scanDirectory(resolvedPath).then(results => {
+        discoverDirectory(resolvedPath).then(results => {
           _filePaths = pushArrays(_filePaths, results);
           resolve(_filePaths);
         }).catch((err) => {
@@ -79,4 +79,4 @@ scanner.scan = directoryPath => new Promise((resolve, reject) => {
 
 });
 
-module.exports = scanner;
+module.exports = discoverer;

@@ -6,7 +6,7 @@ const chai = require('chai'),
   path = require('path'),
   { expect } = chai;
 
-describe('Directory scanner', () => {
+describe('Filesystem scanner', () => {
   it('should resolve path', (done) => {
     const resolvedPath = scanner.resolvePath('/etc/../etc');
 
@@ -21,11 +21,11 @@ describe('Directory scanner', () => {
     done();
   });
 
-  it('should fail scanning non-existent directory', (done) => {
+  it('should fail discovering non-existent directory', (done) => {
     const nonExistentPath = '/i-do-not-exist';
 
 
-    const result = scanner.scan(nonExistentPath);
+    const result = scanner.discover(nonExistentPath);
 
     result.then(() => {
       done('Failed on test');
@@ -35,9 +35,9 @@ describe('Directory scanner', () => {
     });
   });
 
-  it('should scan directory', (done) => {
+  it('should discover directory', (done) => {
     const parentDir = path.join(__dirname, '/../../src');
-    const result = scanner.scan(parentDir);
+    const result = scanner.discover(parentDir);
 
     result.then((files) => {
       expect(files).to.be.not.null;
