@@ -1,9 +1,10 @@
 /* jshint esversion: 6 */
 /* eslint no-sync: "off" */
 const fs = require('fs'),
-  fsPromises = fs.promises,
   path = require('path'),
-  discoverer = {};
+  _this = {
+    fsPromises: fs.promises
+  };
 
 function pushArrays (source, items) {
   const toPush = source.concat.apply([], items);
@@ -14,12 +15,15 @@ function pushArrays (source, items) {
 
 function discoverDirectory(filePath) {
   return new Promise((resolve, reject) => {
-    fsPromises.readdir(filePath).then(subFiles => {
+    _this.fsPromises.readdir(filePath).then(subFiles => {
       const subFilePromisses = subFiles.map(subFile => {
         const fullPath = path.join(filePath, subFile);
-        return discoverer.discover(fullPath).then(subFileScanResults => {
+        const discover = _this.discover(fullPath);
+        discover.then(subFileScanResults => {
           return subFileScanResults;
-        }).catch((err) => {
+        });
+        /* istanbul ignore next */
+        discover.catch((err) => {
           throw err;
         });
       });
@@ -37,26 +41,26 @@ function discoverDirectory(filePath) {
   });
 }
 
-discoverer.resolvePath = (_path) => {
+_this.resolvePath = (_path) => {
   if (_path[0] === '~')
     return path.join(process.env.HOME, _path.slice(1));
 
   return path.resolve(path.normalize(_path));
 };
 
-discoverer.fsExists = (filePath) => new Promise((resolve, reject) => {
-  fsPromises.access(filePath, fs.constants.R_OK).then(() => {
+_this.fsExists = (filePath) => new Promise((resolve, reject) => {
+  _this.fsPromises.access(filePath, fs.constants.R_OK).then(() => {
     resolve();
   }).catch((err) => {
     return reject(err);
   });
 });
 
-discoverer.discover = directoryPath => new Promise((resolve, reject) => {
-  const resolvedPath = discoverer.resolvePath(directoryPath);
+_this.discover = directoryPath => new Promise((resolve, reject) => {
+  const resolvedPath = _this.resolvePath(directoryPath);
 
-  discoverer.fsExists(resolvedPath).then(() => {
-    fsPromises.lstat(resolvedPath).then(stats => {
+  _this.fsExists(resolvedPath).then(() => {
+    _this.fsPromises.lstat(resolvedPath).then(stats => {
       let _filePaths = [];
       _filePaths.push(resolvedPath);
 
@@ -79,4 +83,4 @@ discoverer.discover = directoryPath => new Promise((resolve, reject) => {
 
 });
 
-module.exports = discoverer;
+module.exports = _this;
