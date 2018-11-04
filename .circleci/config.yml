@@ -27,7 +27,7 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
-      - run: sudo yarn global add cross-env --prefix /usr/local
+      - run: sudo npm i -g cross-env
 
       - save_cache:
           paths:
