@@ -27,6 +27,7 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
+      - run: yarn global add cross-env --prefix /usr/local
 
       - save_cache:
           paths:
