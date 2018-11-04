@@ -1,22 +1,28 @@
 /* jshint esversion: 6 */
 
-const _this = {
-    fsScanner: require('../scanners/fs-scanner')
-  },
-  uuid = require('uuid/v4');
+import { FsScanner } from '../scanners/fs-scanner';
+import uuid from 'uuid/v4';
 
-_this.discover = path => {
-  const id = uuid();
+export class DiscoverController {
+  constructor ({ fsScanner = null } = {}) {
+    /* istanbul ignore else */
+    if(fsScanner)
+      this.fsScanner = fsScanner;
+    else
+      this.fsScanner = new FsScanner();
+  }
 
-  _this.fsScanner.discover(path).then((paths) => {
-    console.log(JSON.stringify(paths));
-    //TODO: Push paths to Kafka
-  }).catch((error) => {
-    console.log(error);
-    //TODO: Push errors to Kafka
-  });
+  discover (path) {
+    const id = uuid();
 
-  return id;
-};
+    this.fsScanner.discover(path).then((paths) => {
+      console.log(JSON.stringify(paths));
+      //TODO: Push paths to Kafka
+    }).catch((error) => {
+      console.log(error);
+      //TODO: Push errors to Kafka
+    });
 
-module.exports = _this;
+    return id;
+  }
+}

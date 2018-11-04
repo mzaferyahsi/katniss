@@ -1,14 +1,18 @@
 /* global it, describe */
 /* eslint no-unused-expressions: "off" */
 
+import { DiscoverController } from '../../src/controllers/discover';
+import { FsScanner } from '../../src/scanners/fs-scanner';
+
 const chai = require('chai'),
-  controller = require('../../src/controllers/discover'),
   path = require('path'),
   sinon = require('sinon'),
-  { expect } = chai;
+  { expect } = chai,
+  fs = require('fs');
 
 describe('Discover Controller', () => {
   it('should discover directory', done => {
+    const controller = new DiscoverController({ fsScanner : new FsScanner() });
     const parentDir = path.join(__dirname, '/../../src');
     const id = controller.discover(parentDir);
 
@@ -17,6 +21,7 @@ describe('Discover Controller', () => {
   });
 
   it('should handle error on directory discovery', done => {
+    const controller = new DiscoverController();
     const stub = sinon.stub(controller.fsScanner, 'discover');
     stub.rejects(new Error('ERROR!'));
 

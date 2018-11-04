@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const mocha = require('gulp-mocha');
 const jshint = require('gulp-jshint');
 const eslint = require('gulp-eslint');
-const istanbul = require('gulp-istanbul');
+const babel = require('gulp-babel');
 
 gulp.task('_lint', () => gulp.src(['./src/*.js'])
   .pipe(jshint())
@@ -13,6 +13,7 @@ gulp.task('_lint', () => gulp.src(['./src/*.js'])
   .pipe(eslint.failAfterError()));
 
 gulp.task('_test', () => gulp.src(['./test/**/*.js'])
+  .pipe(babel())
   .pipe(mocha())
 );
 
