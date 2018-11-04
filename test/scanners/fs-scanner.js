@@ -4,12 +4,11 @@
 /* eslint sonarjs/no-identical-functions: "off" */
 /* eslint sonarjs/no-duplicate-string: "off" */
 
-const chai = require('chai'),
-  fs = require('fs'),
-  { FsScanner } = require('../../src/scanners/fs-scanner'),
-  path = require('path'),
-  sinon = require('sinon'),
-  { expect } = chai;
+import { expect } from 'chai';
+import fs from 'fs';
+import { FsScanner } from '../../src/scanners/fs-scanner';
+import path from 'path';
+import sinon from 'sinon';
 
 describe('Filesystem scanner', () => {
   it('should resolve path', (done) => {

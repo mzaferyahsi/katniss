@@ -2,8 +2,8 @@
 /* eslint no-sync: "off" */
 /* eslint array-callback-return: "off" */
 
-const nodeFs = require('fs'),
-  path = require('path');
+import nodeFs from 'fs';
+import path from 'path';
 
 export class FsScanner {
   constructor({ fs = null } = {}) {
