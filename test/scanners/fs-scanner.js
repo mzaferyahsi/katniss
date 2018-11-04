@@ -52,7 +52,6 @@ describe('Filesystem scanner', () => {
     const result = scanner.discover(parentDir);
 
     result.then((files) => {
-      console.log('done');
       expect(files).to.be.not.null;
       expect(files.length).to.be.gt(0);
       expect(files[0]).to.be.eq(parentDir);
@@ -92,9 +91,9 @@ describe('Filesystem scanner', () => {
     const scanner = new FsScanner();
     const stub = sinon.stub(scanner, 'discover');
     stub.rejects(new Error('ERROR!'));
-    const result = scanner.discoverDirectory(path.join(__dirname, '../../src'));
+    const result = scanner.discoverDirectory(path.join(__dirname, '../../src/scanners/'));
 
-    result.then(() => {
+    result.then((files) => {
       done('Unable to handle error');
     }).catch((message) => {
       expect(message).to.be.not.null;

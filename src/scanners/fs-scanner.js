@@ -46,21 +46,27 @@ export class FsScanner {
     return new Promise((resolve, reject) => {
       this.fsPromises.readdir(filePath).then(subFiles => {
         const subFilePromisses = subFiles.map(subFile => {
-          const fullPath = path.join(filePath, subFile);
-          this.discover(fullPath).then(subFileScanResults => {
-            return subFileScanResults;
-          }).catch((err) => {
-            throw err;
+          return new Promise((innerResolve, innerReject) => {
+            const fullPath = path.join(filePath, subFile);
+            this.discover(fullPath).then(subFileScanResults => {
+              innerResolve(subFileScanResults);
+            }).catch((err) => {
+              innerReject(err);
+            });
           });
         });
 
-        Promise.all(subFilePromisses).then((results) => {
-          let discovered = [];
-          results.forEach(item => {
-            discovered = FsScanner.pushArraysSync(discovered, item);
+        Promise.all(subFilePromisses)
+          .then((results) => {
+            let discovered = [];
+            results.forEach(item => {
+              discovered = FsScanner.pushArraysSync(discovered, item);
+            });
+            resolve(results);
+          })
+          .catch((e) => {
+            reject(e);
           });
-          resolve(results);
-        });
       }).catch((err) => {
         reject(err);
       });
