@@ -17,7 +17,12 @@ gulp.task('_test', () => gulp.src(['./test/**/*.js'])
   .pipe(mocha({
     require: [
       '@babel/register'
-    ]}))
+    ],
+    reporter: 'mocha-junit-reporter',
+    reporterOptions :{
+      mochaFile:'./junit/test-results.xml'
+    }
+  }))
 );
 
 gulp.task('test', gulp.series('_lint', '_test'));
