@@ -38,7 +38,7 @@ jobs:
 
       # run tests!
       - run:
-          command: npm run ci-test
+          command: npm run ci-test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
           environment:
             MOCHA_FILE: ./junit/test-results.xml
           when: always

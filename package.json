@@ -10,7 +10,7 @@
     "prestart": "npm test",
     "build": "babel src --out-dir ./dist --source-maps",
     "serve": "node ./dist/index.js",
-    "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
