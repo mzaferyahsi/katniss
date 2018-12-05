@@ -1,5 +1,8 @@
 {
   "kafka": {
-    "hosts": "localhost:9092"
+    "hosts": "localhost:9092",
+    "topics": {
+      "discoveredFiles" : "katniss-discovered"
+    }
   }
 }

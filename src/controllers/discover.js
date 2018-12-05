@@ -4,6 +4,7 @@
 
 import { FsScanner } from '../scanners/fs-scanner';
 import { Kafka } from '../kafka';
+import config from '../config/config';
 
 import uuid from 'uuid/v4';
 
@@ -26,7 +27,33 @@ export class DiscoverController {
     const id = uuid();
 
     this.fsScanner.discover(path).then((paths) => {
-      //TODO: Push paths to Kafka
+      /* istanbul ignore else */
+      if (paths.length > 0)
+        this.kafka.getProducer().then((producer) => {
+          producer.on('error', (err) => {
+            /* istanbul ignore next */
+            console.log(err);
+          });
+
+          producer.on('ready', () => {
+            const payloads = [];
+            paths.forEach((_path) => {
+              payloads.push({
+                topic: config.kafka.topics.discoveredFiles,
+                messages: _path
+              });
+            });
+
+            producer.send(payloads, (err) => {
+              /* istanbul ignore next */
+              console.log(err);
+            });
+          });
+
+        }).catch((error) => {
+          //TODO: handle error
+        });
+      
     }).catch((error) => {
       //TODO: Push errors to Kafka
     });
