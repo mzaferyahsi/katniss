@@ -3,15 +3,23 @@
 /* eslint no-useless-constructor: "off" */
 
 import { FsScanner } from '../scanners/fs-scanner';
+import { Kafka } from '../kafka';
+
 import uuid from 'uuid/v4';
 
 export class DiscoverController {
-  constructor ({ fsScanner = null } = {}) {
+  constructor ({ fsScanner = null, kafka = null } = {}) {
     /* istanbul ignore else */
     if(fsScanner)
       this.fsScanner = fsScanner;
     else
       this.fsScanner = new FsScanner();
+      
+    /* istanbul ignore else */
+    if(kafka)
+      this.kafka = kafka;
+    else
+      this.kafka = new Kafka();
   }
 
   discover (path) {

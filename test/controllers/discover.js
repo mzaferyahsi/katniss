@@ -32,4 +32,21 @@ describe('Discover Controller', () => {
     stub.restore();
     done();
   });
+  
+  it('should use provided Kafka class', (done) => {
+    class MockKafka {
+      constructor() {
+        
+      }
+    }
+    
+    try {
+      const mockKafkaInstance = new MockKafka();
+      const controller = new DiscoverController({ kafka : mockKafkaInstance });
+      expect(controller).to.be.not.null;
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
 });
