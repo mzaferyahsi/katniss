@@ -5,11 +5,13 @@
 import { FsScanner } from '../scanners/fs-scanner';
 import { Kafka } from '../kafka';
 import config from '../config/config';
+import { Logger } from '../logging';
 
 import uuid from 'uuid/v4';
 
 export class DiscoverController {
-  constructor ({ fsScanner = null, kafka = null } = {}) {
+  /* istanbul ignore next */
+  constructor ({ fsScanner = null, kafka = null, logger = null } = {}) {
     /* istanbul ignore else */
     if(fsScanner)
       this.fsScanner = fsScanner;
@@ -21,6 +23,12 @@ export class DiscoverController {
       this.kafka = kafka;
     else
       this.kafka = new Kafka();
+
+    /* istanbul ignore else */
+    if(logger)
+      this.logger = logger;
+    else
+      this.logger = Logger.getLogger({ className: 'DiscoverController' });
   }
 
   discover (path) {
@@ -30,9 +38,9 @@ export class DiscoverController {
       /* istanbul ignore else */
       if (paths.length > 0)
         this.kafka.getProducer().then((producer) => {
-          producer.on('error', (err) => {
+          producer.on('error', (error) => {
             /* istanbul ignore next */
-            console.log(err);
+            this.logger.logError(error);
           });
 
           producer.on('ready', () => {
@@ -44,18 +52,18 @@ export class DiscoverController {
               });
             });
 
-            producer.send(payloads, (err) => {
+            producer.send(payloads, (error) => {
               /* istanbul ignore next */
-              console.log(err);
+              this.logger.logError(error);
             });
           });
 
         }).catch((error) => {
-          //TODO: handle error
+          this.logger.logError(error);
         });
       
     }).catch((error) => {
-      //TODO: Push errors to Kafka
+      this.logger.logError(error);
     });
 
     return id;

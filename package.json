@@ -20,6 +20,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "kafka-node": "^3.0.1",
+    "logstash-client": "^1.1.1",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2"
   },

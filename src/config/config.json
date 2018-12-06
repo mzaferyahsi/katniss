@@ -1,8 +1,15 @@
 {
+  "application": {
+    "name" : "katniss"
+  },
   "kafka": {
     "hosts": "localhost:9092",
     "topics": {
       "discoveredFiles" : "katniss-discovered"
     }
+  },
+  "logging": {
+    "host": "localhost",
+    "port" : 5000
   }
 }
