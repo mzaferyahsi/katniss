@@ -6,11 +6,12 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp test && nyc report --reporter=lcov",
     "lint": "eslint .",
-    "start": "cd ./dependencies && docker-compose down && docker-compose up -d && cd ../src && nodemon index.js",
-    "prestart": "npm test",
+    "start": "nodemon ./src/index.js",
     "build": "babel src --out-dir ./dist --source-maps",
     "serve": "node ./dist/index.js",
-    "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov"
+    "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov",
+    "prestart-dev": "npm test",
+    "start-dev": "./prepare.dev.sh && cd ./src && nodemon index.js"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",

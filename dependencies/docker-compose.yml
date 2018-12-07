@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 services:
   zookeeper:
     image: 'bitnami/zookeeper:latest'
@@ -15,3 +15,56 @@ services:
     - ALLOW_PLAINTEXT_LISTENER=yes
     #volumes:
     #- /path/to/kafka-persistence:/bitnami/kafka
+
+  #ELK Stack
+  elasticsearch:
+    build:
+      context: ../docker-elk/elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+
+  logstash:
+    build:
+      context: ../docker-elk/logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../docker-elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ../docker-elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: ../docker-elk/kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../docker-elk/kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+
+  elk:
+    driver: bridge
