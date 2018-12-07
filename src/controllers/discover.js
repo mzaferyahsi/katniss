@@ -40,7 +40,7 @@ export class DiscoverController {
         this.kafka.getProducer().then((producer) => {
           producer.on('error', (error) => {
             /* istanbul ignore next */
-            this.logger.logError(error);
+            this.logger.logError(new Error().stack, error);
           });
 
           producer.on('ready', () => {
@@ -54,16 +54,16 @@ export class DiscoverController {
 
             producer.send(payloads, (error) => {
               /* istanbul ignore next */
-              this.logger.logError(error);
+              this.logger.logError(new Error().stack, error);
             });
           });
 
         }).catch((error) => {
-          this.logger.logError(error);
+          this.logger.logError(new Error().stack, error);
         });
       
     }).catch((error) => {
-      this.logger.logError(error);
+      this.logger.logError(new Error().stack, error);
     });
 
     return id;

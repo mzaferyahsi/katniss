@@ -4,42 +4,18 @@
 /* eslint sonarjs/no-identical-functions: "off" */
 /* eslint sonarjs/no-duplicate-string: "off" */
 
+import { expect } from 'chai';
+import path from 'path';
+import sinon from 'sinon';
 import { DiscoverController } from '../../src/controllers/discover';
 import { FsScanner } from '../../src/scanners/fs-scanner';
-
-const chai = require('chai'),
-  path = require('path'),
-  sinon = require('sinon'),
-  { expect } = chai,
-  fs = require('fs');
+import { MockLoggingClient } from '../mockloggingclient.js';
 
 describe('Discover Controller', () => {
 
-  class MockLoggingClient {
-    constructor ({ className= null } = {}) {
-      this.className = className;
-    }
-    log (severity, message) {
-      const date = new Date();
-      console.log(`${date} ${this.className} ${severity}:${JSON.stringify(message)}`);
-    }
-
-    logInfo(message) {
-      this.log('info', message);
-    }
-
-    logWarning(message) {
-      this.log('warning', message);
-    }
-
-    logError(message) {
-      this.log('error', message);
-    }
-  }
-
   it('should initialize discover controller', done => {
     try {
-      const controller = new DiscoverController({ logger:new MockLoggingClient('DiscoverController') });
+      const controller = new DiscoverController({ logger:new MockLoggingClient({ className: 'DiscoverController' }) });
       expect(controller).to.be.not.null;
       done();
     } catch (e) {
@@ -70,7 +46,7 @@ describe('Discover Controller', () => {
       }
     }
 
-    const controller = new DiscoverController({ fsScanner : new FsScanner(), kafka: new MockKafka(), logger:new MockLoggingClient('DiscoverController') });
+    const controller = new DiscoverController({ fsScanner : new FsScanner(), kafka: new MockKafka(), logger:new MockLoggingClient({ className: 'DiscoverController' }) });
     const parentDir = path.join(__dirname, '/../../src');
     const id = controller.discover(parentDir);
 
@@ -100,7 +76,7 @@ describe('Discover Controller', () => {
       }
     }
 
-    const controller = new DiscoverController({ kafka: new MockKafka(), logger:new MockLoggingClient('DiscoverController') });
+    const controller = new DiscoverController({ kafka: new MockKafka(), logger:new MockLoggingClient({ className: 'DiscoverController' }) });
     const stub = sinon.stub(controller.fsScanner, 'discover');
     stub.rejects(new Error('ERROR!'));
 
@@ -136,7 +112,7 @@ describe('Discover Controller', () => {
         }
       }
 
-      const controller = new DiscoverController({ kafka : new MockKafka(), logger:new MockLoggingClient('DiscoverController') });
+      const controller = new DiscoverController({ kafka : new MockKafka(), logger:new MockLoggingClient({ className: 'DiscoverController' }) });
       expect(controller).to.be.not.null;
       setTimeout(done, 20);
     } catch (e) {
@@ -170,7 +146,7 @@ describe('Discover Controller', () => {
         }
       }
 
-      const controller = new DiscoverController({ kafka : new MockKafka(), logger:new MockLoggingClient('DiscoverController') });
+      const controller = new DiscoverController({ kafka : new MockKafka(), logger:new MockLoggingClient({ className: 'DiscoverController' }) });
       const parentDir = path.join(__dirname, '/../../src');
       const id = controller.discover(parentDir);
 
@@ -192,7 +168,7 @@ describe('Discover Controller', () => {
         }
       }
 
-      const controller = new DiscoverController({ kafka : new MockKafka(), logger : new MockLoggingClient('DiscoverController') });
+      const controller = new DiscoverController({ kafka : new MockKafka(), logger : new MockLoggingClient({ className: 'DiscoverController' }) });
       const parentDir = path.join(__dirname, '/../../src');
       const id = controller.discover(parentDir);
 

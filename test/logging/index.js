@@ -42,6 +42,15 @@ describe('Logging', () => {
     expect(logger).to.be.not.null;
     setTimeout(done, 10);
   });
+  
+  it('should log message with JSON Object', done => {
+    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+
+    logger.log('info', { message: 'Hello, World!' });
+
+    expect(logger).to.be.not.null;
+    setTimeout(done, 10);
+  });
 
   it('should log info', done => {
     const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
@@ -64,7 +73,7 @@ describe('Logging', () => {
   it('should log error', done => {
     const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
 
-    logger.logError('Hello, World!');
+    logger.logError('Hello, World!', new Error().stack);
 
     expect(logger).to.be.not.null;
     setTimeout(done, 10);

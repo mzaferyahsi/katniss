@@ -36,11 +36,16 @@ export class Logger {
     this.client = client;
   }
 
-  log (severity, message) {
-    this.client.send({
-      message: message,
-      level: severity
-    });
+  log (severity, message, stackTrace) {
+    let logMessage = {
+      message: message
+    };
+    if(typeof message === 'object')
+      logMessage = message;
+      
+    logMessage.stackTrace = stackTrace;
+    logMessage.severity = severity;
+    this.client.send(logMessage);
   }
 
   logInfo(message) {
@@ -51,8 +56,8 @@ export class Logger {
     this.log('warning', message);
   }
 
-  logError(message) {
-    this.log('error', message);
+  logError(message, trace) {
+    this.log('error', message, trace);
   }
 
 }
