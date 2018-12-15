@@ -11,24 +11,10 @@ import uuid from 'uuid/v4';
 
 export class DiscoverController {
   /* istanbul ignore next */
-  constructor ({ fsScanner = null, kafka = null, logger = null } = {}) {
-    /* istanbul ignore else */
-    if(fsScanner)
-      this.fsScanner = fsScanner;
-    else
-      this.fsScanner = new FsScanner();
-      
-    /* istanbul ignore else */
-    if(kafka)
-      this.kafka = kafka;
-    else
-      this.kafka = new Kafka();
-
-    /* istanbul ignore else */
-    if(logger)
-      this.logger = logger;
-    else
-      this.logger = Logger.getLogger({ className: 'DiscoverController' });
+  constructor () {
+    this.fsScanner = new FsScanner();
+    this.kafka = new Kafka();
+    this.logger = Logger.getLogger('DiscoverController');
   }
 
   discover (path) {

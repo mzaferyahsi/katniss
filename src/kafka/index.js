@@ -5,30 +5,11 @@ import config from '../config/config';
 
 export class Kafka {
 
-  constructor({ kafkaClient = null, consumer = null, producer = null, consumerGroup = null } = {}) {
-    /* istanbul ignore else */
-    if(kafkaClient)
-      this._KafkaClient = kafkaClient;
-    else
-      this._KafkaClient = KafkaClient;
-
-    /* istanbul ignore else */
-    if(consumer)
-      this._Consumer = consumer;
-    else
-      this._Consumer = Consumer;
-
-    /* istanbul ignore else */
-    if(producer)
-      this._Producer = producer;
-    else
-      this._Producer = Producer;
-
-    /* istanbul ignore else */
-    if(consumerGroup)
-      this._ConsumerGroup = consumerGroup;
-    else
-      this._ConsumerGroup = ConsumerGroup;
+  constructor() {
+    this.KafkaClient = KafkaClient;
+    this.Consumer = Consumer;
+    this.Producer = Producer;
+    this.ConsumerGroup = ConsumerGroup;
 
     this.client = null;
   }
@@ -38,7 +19,7 @@ export class Kafka {
       try {
         /* istanbul ignore else */
         if(!this.client)
-          this.client = new this._KafkaClient({ kafkaHost: config.kafka.hosts });
+          this.client = new this.KafkaClient({ kafkaHost: config.kafka.hosts });
 
         resolve(this.client);
       } catch (e) {
@@ -51,7 +32,7 @@ export class Kafka {
     return new Promise((resolve, reject) => {
       this.getClient().then((client) => {
         try {
-          const producer = new this._Producer(client, options, customPartitioner);
+          const producer = new this.Producer(client, options, customPartitioner);
           resolve(producer);
         } catch (e) {
           reject(e);
@@ -66,7 +47,7 @@ export class Kafka {
     return new Promise((resolve, reject) => {
       this.getClient().then((client) => {
         try {
-          const consumer = new this._Consumer(client, payloads, options);
+          const consumer = new this.Consumer(client, payloads, options);
           resolve(consumer);
         } catch (e) {
           reject(e);
@@ -110,7 +91,7 @@ export class Kafka {
           callback();
         };
 
-        const consumerGroup = new this._ConsumerGroup(options, topics);
+        const consumerGroup = new this.ConsumerGroup(options, topics);
         resolve(consumerGroup);
 
       } catch (e) {

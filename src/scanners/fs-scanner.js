@@ -7,25 +7,14 @@ import path from 'path';
 import { Logger } from '../logging';
 
 export class FsScanner {
-  constructor({ fs = null, logger = null } = {}) {
-    /* istanbul ignore else */
-    if (fs) {
-      this.fs = fs;
-      this.fsPromises = fs.promises;
-    }
-    else {
-      this.fs = nodeFs;
-      this.fsPromises = nodeFs.promises;
-    }
+  constructor() {
+    this.fs = nodeFs;
+    this.fsPromises = nodeFs.promises;
 
     if (!this.fsPromises)
       throw new Error("Fs doesn't support promises. Please use NodeJS v10.0.0 at least.");
 
-    /* istanbul ignore else */
-    if (logger)
-      this.logger = logger;
-    else
-      this.logger = Logger.getLogger({ className: 'FsScanner' });
+    this.logger = Logger.getLogger('FsScanner');
   }
 
   static resolvePath(_path) {

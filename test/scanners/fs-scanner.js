@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, describe, before, after, beforeEach, afterEach */
 /* eslint no-unused-expressions: "off" */
 /* eslint no-unused-vars: "off" */
 /* eslint sonarjs/no-identical-functions: "off" */
@@ -10,8 +10,30 @@ import { FsScanner } from '../../src/scanners/fs-scanner';
 import path from 'path';
 import sinon from 'sinon';
 import { MockLoggingClient } from '../mockloggingclient.js';
+import { Logger } from '../../src/logging';
 
 describe('Filesystem scanner', () => {
+
+  let loggerStub = null;
+  let sandbox = null;
+
+  before(() => {
+    sandbox = sinon.createSandbox();
+
+    loggerStub = sinon.stub(Logger,'getLogger');
+    loggerStub.returns(new MockLoggingClient('FsScannerTest'));
+  });
+
+  after(() => {
+    loggerStub.restore();
+    sandbox.reset();
+    sandbox.restore();
+  });
+
+  afterEach(() => {
+    sandbox.reset();
+    sandbox.restore();
+  });
   
   it('should resolve path', (done) => {
     FsScanner.resolvePath('/etc/../etc').then((resolved) => {
@@ -34,7 +56,7 @@ describe('Filesystem scanner', () => {
   });
 
   it('should fail discovering non-existent directory', (done) => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
+    const scanner = new FsScanner();
     const nonExistentPath = '/i-do-not-exist';
 
     const result = scanner.discover(nonExistentPath);
@@ -48,7 +70,7 @@ describe('Filesystem scanner', () => {
   });
 
   it('should discover directory', (done) => {
-    const scanner = new FsScanner({ fs: fs, logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
+    const scanner = new FsScanner();
     const parentDir = path.join(__dirname, '/../../src');
     const result = scanner.discover(parentDir);
 
@@ -63,9 +85,12 @@ describe('Filesystem scanner', () => {
   });
 
   it('should fail on unsupported promises on fs', done => {
-    const unsupportedFs = {};
+    const stub = sandbox.stub(fs, 'promises');
+    stub.value(undefined);
+
     try {
-      const scanner = new FsScanner({ fs: unsupportedFs, logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
+      const scanner = new FsScanner();
+
       done('Unable to fail!');
     } catch (e) {
       done();
@@ -73,24 +98,27 @@ describe('Filesystem scanner', () => {
   });
 
   it('should fail reading directory contents', done => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
-    const stub = sinon.stub(scanner.fsPromises, 'readdir');
+    const scanner = new FsScanner();
+
+    const stub = sandbox.stub(scanner.fsPromises, 'readdir');
     stub.rejects(new Error('ERROR!'));
     const result = scanner.discover(__dirname);
 
     result.then(() => {
+
       done('Unable to handle error');
     }).catch((message) => {
       expect(message).to.be.not.null;
       expect(message).to.be.a('Error');
-      stub.restore();
+
       done();
     });
   });
 
   it('should fail discovering directories', done => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
-    const stub = sinon.stub(scanner, 'discover');
+    const scanner = new FsScanner();
+
+    const stub = sandbox.stub(scanner, 'discover');
     stub.rejects(new Error('ERROR!'));
     const result = scanner.discoverDirectory(path.join(__dirname, '../../src/scanners/'));
 
@@ -99,14 +127,14 @@ describe('Filesystem scanner', () => {
     }).catch((message) => {
       expect(message).to.be.not.null;
       expect(message).to.be.a('Error');
-      stub.restore();
+
       done();
     });
   });
 
   it('should fail discovering directories from resolve error', done => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
-    const stub = sinon.stub(FsScanner, 'resolvePath');
+    const scanner = new FsScanner();
+    const stub = sandbox.stub(FsScanner, 'resolvePath');
     stub.rejects(new Error('ERROR!'));
     const result = scanner.discover(path.join(__dirname, '../../src'));
 
@@ -115,14 +143,14 @@ describe('Filesystem scanner', () => {
     }).catch((message) => {
       expect(message).to.be.not.null;
       expect(message).to.be.a('Error');
-      stub.restore();
+
       done();
     });
   });
 
   it('should fail reading file', done => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
-    const stub = sinon.stub(scanner.fsPromises, 'access');
+    const scanner = new FsScanner();
+    const stub = sandbox.stub(scanner.fsPromises, 'access');
     stub.rejects(new Error('ERROR!'));
     const result = scanner.discover(__dirname);
 
@@ -131,14 +159,14 @@ describe('Filesystem scanner', () => {
     }).catch((message) => {
       expect(message).to.be.not.null;
       expect(message).to.be.a('Error');
-      stub.restore();
+
       done();
     });
   });
 
   it('should fail reading statistics', done => {
-    const scanner = new FsScanner({ logger : new MockLoggingClient({ className: 'FsScannerTest' }) });
-    const stub = sinon.stub(scanner.fsPromises, 'lstat');
+    const scanner = new FsScanner();
+    const stub = sandbox.stub(scanner.fsPromises, 'lstat');
     stub.rejects(new Error('ERROR!'));
     const result = scanner.discover(__dirname);
 
@@ -147,7 +175,7 @@ describe('Filesystem scanner', () => {
     }).catch((message) => {
       expect(message).to.be.not.null;
       expect(message).to.be.a('Error');
-      stub.restore();
+
       done();
     });
   });

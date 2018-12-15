@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, describe, before, after, beforeEach, afterEach */
 /* eslint no-unused-expressions: "off" */
 /* eslint no-unused-vars: "off" */
 /* eslint sonarjs/no-identical-functions: "off" */
@@ -6,21 +6,32 @@
 /* eslint class-methods-use-this: "off" */
 
 import { expect } from 'chai';
-import { Logger } from '../../src/logging';
+import sinon from 'sinon';
+import proxyrequire from 'proxyquire';
+import Logstash from 'logstash-client';
 
 describe('Logging', () => {
-  class MockLoggingClient {
-    constructor ({ className= null } = {}) {
-      this.className = className;
-    }
+  let Logger;
 
-    send (message) {
-      console.log(message);
-    }
+  function MockLoggingClient(options) {
+    this.options = options;
+  };
+
+  MockLoggingClient.prototype.connect = function connect() {
+    console.log('Mock logger connected');
   }
+  MockLoggingClient.prototype.send = function send(message) {
+    console.log(this.options.format(message));
+  };
+
+  before(() => {
+    Logger = proxyrequire('../../src/logging', {
+      'logstash-client' : MockLoggingClient
+    }).Logger;
+  });
 
   it('should initialize logger', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+    const logger = Logger.getLogger('LoggingTest');
     expect(logger).to.be.not.null;
     done();
   });
@@ -35,47 +46,47 @@ describe('Logging', () => {
   });
 
   it('should log message', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+    const logger = Logger.getLogger('LoggingTest');
 
     logger.log('info', 'Hello, World!');
 
     expect(logger).to.be.not.null;
-    setTimeout(done, 10);
+    done();
   });
-  
-  it('should log message with JSON Object', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
 
-    logger.log('info', { message: 'Hello, World!' });
+  it('should log message with JSON Object', done => {
+    const logger = Logger.getLogger('LoggingTest');
+
+    logger.log('info', { message: 'Hello, World!', password: 'password' });
 
     expect(logger).to.be.not.null;
-    setTimeout(done, 10);
+    done();
   });
 
   it('should log info', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+    const logger = Logger.getLogger('LoggingTest');
 
     logger.logInfo('Hello, World!');
 
     expect(logger).to.be.not.null;
-    setTimeout(done, 10);
+    done();
   });
 
   it('should log warning', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+    const logger = Logger.getLogger('LoggingTest');
 
     logger.logWarning('Hello, World!');
 
     expect(logger).to.be.not.null;
-    setTimeout(done, 10);
+    done();
   });
 
   it('should log error', done => {
-    const logger = Logger.getLogger({ className: 'LoggingTest', client: MockLoggingClient });
+    const logger = Logger.getLogger('LoggingTest');
 
     logger.logError('Hello, World!', new Error().stack);
 
     expect(logger).to.be.not.null;
-    setTimeout(done, 10);
+    done();
   });
 });

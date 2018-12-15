@@ -1,4 +1,4 @@
-/* global it, describe */
+/* global it, describe, before, after, beforeEach, afterEach */
 /* eslint no-unused-expressions: "off" */
 /* eslint no-unused-vars: "off" */
 /* eslint no-empty-function: "off" */
@@ -6,14 +6,39 @@
 /* eslint sonarjs/no-identical-functions: "off" */
 
 import { Kafka } from '../../src/kafka';
-// import sinon from 'sinon';
 import { expect } from 'chai';
-// import kafkaNode from 'kafka-node';
 import config from '../../src/config/config';
+import sinon from 'sinon';
+import { Logger } from '../../src/logging';
+import { MockLoggingClient } from '../mockloggingclient';
+import proxyquire from 'proxyquire';
 
 describe('Kafka', () => {
+
+  let loggerStub = null;
+  let sandbox = null;
+
+  before(() => {
+    sandbox = sinon.createSandbox();
+
+    loggerStub = sinon.stub(Logger,'getLogger');
+    loggerStub.returns(new MockLoggingClient('FsScannerTest'));
+  });
+
+  after(() => {
+    loggerStub.restore();
+    sandbox.reset();
+    sandbox.restore();
+  });
+
+  afterEach(() => {
+    sandbox.reset();
+    sandbox.restore();
+  });
+
   it('should initiate new Kafka instance', done => {
     try {
+
       const kafka = new Kafka();
       expect(kafka).to.be.not.null;
       done();
@@ -28,7 +53,13 @@ describe('Kafka', () => {
       constructor (options) {
       }
     }
-    const kafka = new Kafka({ kafkaClient: Stub });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: Stub
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getClient().then((client) => {
       expect(client).to.be.not.null;
@@ -39,13 +70,21 @@ describe('Kafka', () => {
     });
   });
 
+
   it('should handle error when returning kafka client', done => {
-    class stub {
+    class Stub {
       constructor () {
         throw new Error('Error!');
       }
     }
-    const kafka = new Kafka({ kafkaClient: stub });
+
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: Stub
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getClient().then(() => {
       return done('Unable to fail');
@@ -69,7 +108,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, consumer: StubConsumer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Consumer: StubConsumer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumer({}, {}).then((consumer) => {
       expect(consumer).to.be.not.null;
@@ -96,7 +142,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, consumer: StubConsumer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Consumer: StubConsumer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumer({}, {}).then((consumer) => {
       done('Failed to return error');
@@ -118,7 +171,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, consumer: StubConsumer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Consumer: StubConsumer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumer({}, {}).then((consumer) => {
       done('Failed to return error');
@@ -127,7 +187,6 @@ describe('Kafka', () => {
       done();
     });
   });
-
 
   it('should return stubbed producer', done => {
     class StubClient {
@@ -144,7 +203,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, producer: StubProducer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Producer: StubProducer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getProducer({}, {}).then((producer) => {
       expect(producer).to.be.not.null;
@@ -171,7 +237,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, producer: StubProducer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Producer: StubProducer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getProducer({}, {}).then((producer) => {
       done('Failed to return error');
@@ -193,7 +266,14 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ kafkaClient: StubClient, producer: StubProducer });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        KafkaClient: StubClient,
+        Producer: StubProducer
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getProducer({}, {}).then((producer) => {
       done('Failed to return error');
@@ -211,7 +291,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: {} }).then(consumerGroup => {
 
@@ -233,7 +319,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: {} }).then(consumerGroup => {
 
@@ -255,7 +347,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ topics: ['topic'] }).then(consumerGroup => {
       done('Failed to return error');
@@ -273,7 +371,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: { groupId: 'differentId' } }).then(consumerGroup => {
       done('Failed to return error');
@@ -291,7 +395,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ groupId: 'a' }).then(consumerGroup => {
       done('Failed to return error');
@@ -309,7 +419,13 @@ describe('Kafka', () => {
       }
     }
 
-    const kafka = new Kafka({ consumerGroup: StubConsumerGroup });
+    const _Kafka = proxyquire('../../src/kafka', {
+      'kafka-node': {
+        ConsumerGroup: StubConsumerGroup
+      }
+    }).Kafka;
+
+    const kafka = new _Kafka();
 
     kafka.getConsumerGroup({ groupId: 'a' , topics: ['topic'] }).then(consumerGroup => {
       done('Failed to return error');
