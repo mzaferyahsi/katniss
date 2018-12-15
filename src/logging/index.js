@@ -3,6 +3,14 @@
 import Logstash from 'logstash-client';
 import config from '../config/config';
 
+export const LogLevel = {
+  Debug: 0,
+  Info: 1,
+  Warning: 2,
+  Error: 3,
+  Fatal: 4
+};
+
 export class Logger {
   static getLogger(className) {
     /* istanbul ignore else */
@@ -30,9 +38,13 @@ export class Logger {
 
   constructor(client) {
     this.client = client;
+    this.level = LogLevel[config.logging.level];
   }
 
   log (severity, message, stackTrace) {
+    if (severity < this.level)
+      return;
+
     let logMessage = {
       message: message
     };
@@ -44,16 +56,24 @@ export class Logger {
     this.client.send(logMessage);
   }
 
+  logDebug(message) {
+    this.log(LogLevel.Debug, message);
+  }
+
   logInfo(message) {
-    this.log('info', message);
+    this.log(LogLevel.Info, message);
   }
 
   logWarning(message) {
-    this.log('warning', message);
+    this.log(LogLevel.Warning, message);
   }
 
   logError(message, trace) {
-    this.log('error', message, trace);
+    this.log(LogLevel.Error, message, trace);
+  }
+
+  logFatal(message, trace) {
+    this.log(LogLevel.Fatal, message, trace);
   }
 
 }

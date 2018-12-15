@@ -9,6 +9,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import proxyrequire from 'proxyquire';
 import Logstash from 'logstash-client';
+import { LogLevel } from '../../src/logging';
 
 describe('Logging', () => {
   let Logger;
@@ -48,7 +49,7 @@ describe('Logging', () => {
   it('should log message', done => {
     const logger = Logger.getLogger('LoggingTest');
 
-    logger.log('info', 'Hello, World!');
+    logger.log(LogLevel.Info, 'Hello, World!');
 
     expect(logger).to.be.not.null;
     done();
@@ -57,7 +58,17 @@ describe('Logging', () => {
   it('should log message with JSON Object', done => {
     const logger = Logger.getLogger('LoggingTest');
 
-    logger.log('info', { message: 'Hello, World!', password: 'password' });
+    logger.log(LogLevel.Info, { message: 'Hello, World!', password: 'password' });
+
+    expect(logger).to.be.not.null;
+    done();
+  });
+
+
+  it('should log debug', done => {
+    const logger = Logger.getLogger('LoggingTest');
+
+    logger.logDebug('Hello, World!');
 
     expect(logger).to.be.not.null;
     done();
@@ -89,4 +100,24 @@ describe('Logging', () => {
     expect(logger).to.be.not.null;
     done();
   });
+
+  it('should log fatal', done => {
+    const logger = Logger.getLogger('LoggingTest');
+
+    logger.logFatal('Hello, World!', new Error().stack);
+
+    expect(logger).to.be.not.null;
+    done();
+  });
+
+  it('should not log lover level', done => {
+    const logger = Logger.getLogger('LoggingTest');
+    logger.level = LogLevel.Error;
+
+    logger.logDebug('Hello, World!', new Error().stack);
+
+    expect(logger).to.be.not.null;
+    done();
+  });
+
 });
