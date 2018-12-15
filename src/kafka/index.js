@@ -2,6 +2,7 @@
 
 import { KafkaClient, Consumer, Producer, ConsumerGroup } from 'kafka-node';
 import config from '../config/config';
+import { Logger } from '../logging';
 
 export class Kafka {
 
@@ -10,6 +11,7 @@ export class Kafka {
     this.Consumer = Consumer;
     this.Producer = Producer;
     this.ConsumerGroup = ConsumerGroup;
+    this.logger = Logger.getLogger('Kafka');
 
     this.client = null;
   }
@@ -23,6 +25,7 @@ export class Kafka {
 
         resolve(this.client);
       } catch (e) {
+        this.logger.logError(e, e.stack);
         reject(e);
       }
     });
@@ -35,9 +38,11 @@ export class Kafka {
           const producer = new this.Producer(client, options, customPartitioner);
           resolve(producer);
         } catch (e) {
+          this.logger.logError(e, e.stack);
           reject(e);
         }
       }).catch((e) => {
+        this.logger.logError(e, e.stack);
         reject(e);
       });
     });
@@ -50,9 +55,11 @@ export class Kafka {
           const consumer = new this.Consumer(client, payloads, options);
           resolve(consumer);
         } catch (e) {
+          this.logger.logError(e, e.stack);
           reject(e);
         }
       }).catch((e) => {
+        this.logger.logError(e, e.stack);
         reject(e);
       });
     });
@@ -95,6 +102,7 @@ export class Kafka {
         resolve(consumerGroup);
 
       } catch (e) {
+        this.logger.logError(e, e.stack);
         reject(e);
       }
     });

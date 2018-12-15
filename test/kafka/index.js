@@ -22,7 +22,7 @@ describe('Kafka', () => {
     sandbox = sinon.createSandbox();
 
     loggerStub = sinon.stub(Logger,'getLogger');
-    loggerStub.returns(new MockLoggingClient('FsScannerTest'));
+    loggerStub.returns(new MockLoggingClient('KafkaTests'));
   });
 
   after(() => {
