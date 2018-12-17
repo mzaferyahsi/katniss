@@ -7,7 +7,6 @@ import * as log4js from 'log4js';
 import { DiscoverRoute } from './routes/discover';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { FileInfoController } from './controllers/file-info';
 
 const app = express(),
   port = 8001 || process.env.PORT;
