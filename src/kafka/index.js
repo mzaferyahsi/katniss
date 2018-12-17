@@ -2,7 +2,7 @@
 
 import { KafkaClient, Consumer, Producer, ConsumerGroup } from 'kafka-node';
 import config from '../config/config';
-import { Logger } from '../logging';
+import log4js from 'log4js';
 
 export class Kafka {
 
@@ -11,7 +11,8 @@ export class Kafka {
     this.Consumer = Consumer;
     this.Producer = Producer;
     this.ConsumerGroup = ConsumerGroup;
-    this.logger = Logger.getLogger('Kafka');
+    this.logger = log4js.getLogger();
+    this.logger.addContext('source', 'Kafka');
 
     this.client = null;
   }
@@ -19,13 +20,11 @@ export class Kafka {
   getClient () {
     return new Promise((resolve, reject) => {
       try {
-        /* istanbul ignore else */
-        if(!this.client)
-          this.client = new this.KafkaClient({ kafkaHost: config.kafka.hosts });
+        const client = new this.KafkaClient({ kafkaHost: config.kafka.hosts, maxAsyncRequests:config.kafka.maxAsyncRequests });
 
-        resolve(this.client);
+        resolve(client);
       } catch (e) {
-        this.logger.logError(e, e.stack);
+        this.logger.error(e, e.stack);
         reject(e);
       }
     });
@@ -38,11 +37,11 @@ export class Kafka {
           const producer = new this.Producer(client, options, customPartitioner);
           resolve(producer);
         } catch (e) {
-          this.logger.logError(e, e.stack);
+          this.logger.error(e, e.stack);
           reject(e);
         }
       }).catch((e) => {
-        this.logger.logError(e, e.stack);
+        this.logger.error(e, e.stack);
         reject(e);
       });
     });
@@ -55,11 +54,11 @@ export class Kafka {
           const consumer = new this.Consumer(client, payloads, options);
           resolve(consumer);
         } catch (e) {
-          this.logger.logError(e, e.stack);
+          this.logger.error(e, e.stack);
           reject(e);
         }
       }).catch((e) => {
-        this.logger.logError(e, e.stack);
+        this.logger.error(e, e.stack);
         reject(e);
       });
     });
@@ -102,7 +101,7 @@ export class Kafka {
         resolve(consumerGroup);
 
       } catch (e) {
-        this.logger.logError(e, e.stack);
+        this.logger.error(e, e.stack);
         reject(e);
       }
     });

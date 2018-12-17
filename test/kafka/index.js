@@ -9,24 +9,18 @@ import { Kafka } from '../../src/kafka';
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import sinon from 'sinon';
-import { Logger } from '../../src/logging';
-import { MockLoggingClient } from '../mockloggingclient';
 import proxyquire from 'proxyquire';
+import log4jsConfig from '../log4js';
 
 describe('Kafka', () => {
 
-  let loggerStub = null;
   let sandbox = null;
 
   before(() => {
     sandbox = sinon.createSandbox();
-
-    loggerStub = sinon.stub(Logger,'getLogger');
-    loggerStub.returns(new MockLoggingClient('KafkaTests'));
   });
 
   after(() => {
-    loggerStub.restore();
     sandbox.reset();
     sandbox.restore();
   });
@@ -52,6 +46,12 @@ describe('Kafka', () => {
     class Stub {
       constructor (options) {
       }
+
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
+      }
     }
     const _Kafka = proxyquire('../../src/kafka', {
       'kafka-node': {
@@ -76,6 +76,11 @@ describe('Kafka', () => {
       constructor () {
         throw new Error('Error!');
       }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
+      }
     }
 
     const _Kafka = proxyquire('../../src/kafka', {
@@ -97,6 +102,11 @@ describe('Kafka', () => {
     class StubClient {
       constructor(options) {
 
+      }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
       }
     }
 
@@ -132,6 +142,11 @@ describe('Kafka', () => {
       constructor(options) {
         throw new Error('ERROR!');
       }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
+      }
     }
 
     class StubConsumer {
@@ -163,6 +178,11 @@ describe('Kafka', () => {
     class StubClient {
       constructor(options) {
       }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
+      }
     }
 
     class StubConsumer {
@@ -192,6 +212,11 @@ describe('Kafka', () => {
     class StubClient {
       constructor(options) {
 
+      }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
       }
     }
 
@@ -227,6 +252,11 @@ describe('Kafka', () => {
       constructor(options) {
         throw new Error('ERROR!');
       }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
+      }
     }
 
     class StubProducer {
@@ -257,6 +287,11 @@ describe('Kafka', () => {
   it('should handle error when initializing stubbed producer', done => {
     class StubClient {
       constructor(options) {
+      }
+      createTopics(topics, callback) {
+        setTimeout(() => {
+          callback(null, {});
+        }, 5);
       }
     }
 

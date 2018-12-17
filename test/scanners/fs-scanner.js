@@ -9,23 +9,17 @@ import fs from 'fs';
 import { FsScanner } from '../../src/scanners/fs-scanner';
 import path from 'path';
 import sinon from 'sinon';
-import { MockLoggingClient } from '../mockloggingclient.js';
-import { Logger } from '../../src/logging';
+import log4jsConfig from '../log4js';
 
 describe('Filesystem scanner', () => {
 
-  let loggerStub = null;
   let sandbox = null;
 
   before(() => {
     sandbox = sinon.createSandbox();
-
-    loggerStub = sinon.stub(Logger,'getLogger');
-    loggerStub.returns(new MockLoggingClient('FsScannerTest'));
   });
 
   after(() => {
-    loggerStub.restore();
     sandbox.reset();
     sandbox.restore();
   });

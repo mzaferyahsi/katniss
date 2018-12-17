@@ -4,7 +4,7 @@
 
 import nodeFs from 'fs';
 import path from 'path';
-import { Logger } from '../logging';
+import * as log4js from 'log4js';
 
 export class FsScanner {
   constructor() {
@@ -14,7 +14,8 @@ export class FsScanner {
     if (!this.fsPromises)
       throw new Error("Fs doesn't support promises. Please use NodeJS v10.0.0 at least.");
 
-    this.logger = Logger.getLogger('FsScanner');
+    this.logger = log4js.getLogger();
+    this.logger.addContext('source', 'FsScanner');
   }
 
   static resolvePath(_path) {
@@ -48,7 +49,7 @@ export class FsScanner {
             this.discover(fullPath).then(subFileScanResults => {
               innerResolve(subFileScanResults);
             }).catch((err) => {
-              this.logger.logError(err, new Error().stack);
+              this.logger.error(err, new Error().stack);
               innerReject(err);
             });
           });
@@ -63,11 +64,11 @@ export class FsScanner {
             resolve(results);
           })
           .catch((e) => {
-            this.logger.logError(e, new Error().stack);
+            this.logger.error(e, new Error().stack);
             reject(e);
           });
       }).catch((err) => {
-        this.logger.logError(err, new Error().stack);
+        this.logger.error(err, new Error().stack);
         reject(err);
       });
     });
@@ -78,7 +79,7 @@ export class FsScanner {
       this.fsPromises.access(filePath, this.fs.constants.R_OK).then(() => {
         resolve();
       }).catch((err) => {
-        this.logger.logError(err, new Error().stack);
+        this.logger.error(err, new Error().stack);
         return reject(err);
       });
     });
@@ -97,22 +98,22 @@ export class FsScanner {
                 _filePaths = FsScanner.pushArraysSync(_filePaths, results);
                 resolve(_filePaths);
               }).catch((err) => {
-                this.logger.logError(err, new Error().stack);
+                this.logger.error(err, new Error().stack);
                 reject(err);
               });
             else
               return resolve(_filePaths);
 
           }).catch((err) => {
-            this.logger.logError(err, new Error().stack);
+            this.logger.error(err, new Error().stack);
             reject(err);
           });
         }).catch((err) => {
-          this.logger.logError(err, new Error().stack);
+          this.logger.error(err, new Error().stack);
           reject(err);
         });
       }).catch((e) => {
-        this.logger.logError(e, new Error().stack);
+        this.logger.error(e, new Error().stack);
         reject(e);
       });
 

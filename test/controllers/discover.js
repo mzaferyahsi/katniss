@@ -8,27 +8,18 @@ import { expect } from 'chai';
 import path from 'path';
 import sinon from 'sinon';
 import { DiscoverController } from '../../src/controllers/discover';
-import { MockLoggingClient } from '../mockloggingclient.js';
 import proxyquire from 'proxyquire';
-import { Logger } from '../../src/logging';
+import log4jsConfig from '../log4js';
 
 describe('Discover Controller', () => {
 
-  let loggerStub = null;
   let sandbox = null;
 
   before(() => {
     sandbox = sinon.createSandbox();
-
-    loggerStub = sinon.stub(Logger, 'getLogger');
-    loggerStub.callsFake((className) => {
-      console.log(className);
-      return new MockLoggingClient(className);
-    });
   });
 
   after(() => {
-    loggerStub.restore();
     sandbox.reset();
     sandbox.restore();
   });
@@ -72,20 +63,15 @@ describe('Discover Controller', () => {
     }
 
     const TestDiscoverController = proxyquire('../../src/controllers/discover', {
-      '../kafka': { Kafka: MockKafka },
-      '../logging': {
-        Logger: {
-          getLogger: loggerStub
-        }
-      }
+      '../kafka': { Kafka: MockKafka }
     }).DiscoverController;
 
     const controller = new TestDiscoverController();
     const parentDir = path.join(__dirname, '/../../src');
-    const id = controller.discover(parentDir);
-
-    expect(id).to.be.not.null;
-    setTimeout(done, 10);
+    controller.discover(parentDir).then((id) => {
+      expect(id).to.be.not.null;
+      setTimeout(done, 10);
+    });
   });
 
 
@@ -112,12 +98,7 @@ describe('Discover Controller', () => {
     }
 
     const TestDiscoverController = proxyquire('../../src/controllers/discover', {
-      '../kafka': { Kafka: MockKafka },
-      '../logging': {
-        Logger: {
-          getLogger: loggerStub
-        }
-      }
+      '../kafka': { Kafka: MockKafka }
     }).DiscoverController;
 
     const controller = new TestDiscoverController();
@@ -125,11 +106,12 @@ describe('Discover Controller', () => {
     stub.rejects(new Error('ERROR!'));
 
     const parentDir = path.join(__dirname, '/../../src');
-    const id = controller.discover(parentDir);
-    expect(id).to.be.not.null;
+    controller.discover(parentDir).then((id) => {
+      expect(id).to.be.not.null;
 
-    stub.restore();
-    setTimeout(done, 20);
+      stub.restore();
+      setTimeout(done, 20);
+    });
   });
 
   it('should use provided Kafka class', (done) => {
@@ -157,12 +139,7 @@ describe('Discover Controller', () => {
       }
 
       const TestDiscoverController = proxyquire('../../src/controllers/discover', {
-        '../kafka': { Kafka: MockKafka },
-        '../logging': {
-          Logger: {
-            getLogger: loggerStub
-          }
-        }
+        '../kafka': { Kafka: MockKafka }
       }).DiscoverController;
 
       const controller = new TestDiscoverController();
@@ -201,20 +178,15 @@ describe('Discover Controller', () => {
       }
 
       const TestDiscoverController = proxyquire('../../src/controllers/discover', {
-        '../kafka': { Kafka: MockKafka },
-        '../logging': {
-          Logger: {
-            getLogger: loggerStub
-          }
-        }
+        '../kafka': { Kafka: MockKafka }
       }).DiscoverController;
 
       const controller = new TestDiscoverController();
       const parentDir = path.join(__dirname, '/../../src');
-      const id = controller.discover(parentDir);
-
-      expect(id).to.be.not.null;
-      setTimeout(done, 20);
+      controller.discover(parentDir).then((id) => {
+        expect(id).to.be.not.null;
+        setTimeout(done, 20);
+      });
     } catch (e) {
       done(e);
     }
@@ -232,21 +204,16 @@ describe('Discover Controller', () => {
       }
 
       const TestDiscoverController = proxyquire('../../src/controllers/discover', {
-        '../kafka': { Kafka: MockKafka },
-        '../logging': {
-          Logger: {
-            getLogger: loggerStub
-          }
-        }
+        '../kafka': { Kafka: MockKafka }
       }).DiscoverController;
 
       const controller = new TestDiscoverController();
 
       const parentDir = path.join(__dirname, '/../../src');
-      const id = controller.discover(parentDir);
-
-      expect(id).to.be.not.null;
-      setTimeout(done, 20);
+      controller.discover(parentDir).then((id)=>{
+        expect(id).to.be.not.null;
+        setTimeout(done, 20);
+      });
     } catch (e) {
       done(e);
     }

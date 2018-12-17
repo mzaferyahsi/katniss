@@ -2,31 +2,35 @@
   "name": "katniss",
   "version": "1.0.0",
   "description": "A smart way to analyse your files",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp test && nyc report --reporter=lcov",
     "lint": "eslint .",
-    "start": "nodemon ./src/index.js",
-    "build": "babel src --out-dir ./dist --source-maps",
-    "serve": "node ./dist/index.js",
+    "start": "npm run build & nodemon ./dst/index.js",
+    "build": "rimraf dist/ && babel ./src --out-dir dist/ --ignore ./node_modules,./.babelrc,./npm-debug.log --copy-files --source-maps && cp package.json ./dist",
+    "serve": "node index.js",
     "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov",
-    "prestart-dev": "npm test",
-    "start-dev": "./prepare.dev.sh && cd ./src && nodemon index.js"
+    "dev": "nodemon --exec \"npm test && npm run build && npm run serve-dev\" -e js,json --ignore ./dist",
+    "serve-dev": "node ./dist/index.js"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
   "license": "MIT",
   "dependencies": {
+    "@log4js-node/logstash-http": "^1.0.0",
+    "@log4js-node/logstashudp": "^1.0.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "kafka-node": "^3.0.1",
+    "log4js": "^3.0.6",
     "logstash-client": "^1.1.1",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.2",
     "@babel/node": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
@@ -53,7 +57,9 @@
     "mocha-junit-reporter": "^1.18.0",
     "nyc": "^13.1.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.1.0"
+    "rimraf": "^2.6.2",
+    "sinon": "^7.1.0",
+    "sinon-chai": "^3.3.0"
   },
   "nyc": {
     "check-coverage": true,
