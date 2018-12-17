@@ -6,3 +6,9 @@
 [![dependencies Status](https://david-dm.org/mzaferyahsi/katniss/status.svg)](https://david-dm.org/mzaferyahsi/katniss)
 
 A smart way to analyse your files.
+
+# Running development environment
+
+Katniss requires Kafka as a must dependency. You can run it locally with [kafak-docker](https://github.com/wurstmeister/kafka-docker).
+Also current configuration requires Logstash as well. You can either update the configuration file to not to use Logstash
+or you can run ELK stack locally with [docker-elk](https://github.com/deviantony/docker-elk).
