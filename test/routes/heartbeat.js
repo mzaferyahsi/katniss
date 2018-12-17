@@ -33,7 +33,7 @@ describe('Heartbeat Route tests', ()=> {
     const router = express.Router();
     const spyRouter = sandbox.spy(router, 'get');
 
-    HeartBeatRoute.configure(router);
+    new HeartBeatRoute().configure(router);
     expect(spyRouter.calledOnce).to.be.ok;
 
     done();
@@ -51,6 +51,6 @@ describe('Heartbeat Route tests', ()=> {
       done();
     });
 
-    HeartBeatRoute.handleGet({}, response);
+    new HeartBeatRoute().handleGet({}, response);
   });
 });

@@ -43,7 +43,7 @@ export class DiscoverController {
                 for (let j = 0; j < 100  && i+j < paths.length; j++) {
                   const msg = {
                     topic: config.kafka.topics.discoveredFiles,
-                    messages: path[i+j]
+                    messages: paths[i+j]
                   };
 
                   payload.push(msg);

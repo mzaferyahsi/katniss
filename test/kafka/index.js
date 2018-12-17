@@ -334,7 +334,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: {} }).then(consumerGroup => {
+    kafka.getConsumerGroup('id', ['topic'], {}).then(consumerGroup => {
 
       expect(consumerGroup).to.be.not.null;
       expect(consumerGroup.options.kafkaHost).to.be.eq(config.kafka.hosts);
@@ -362,7 +362,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: {} }).then(consumerGroup => {
+    kafka.getConsumerGroup('id',['topic'], {}).then(consumerGroup => {
 
       expect(consumerGroup).to.be.not.null;
       expect(consumerGroup.options.kafkaHost).to.be.eq(config.kafka.hosts);
@@ -390,7 +390,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ topics: ['topic'] }).then(consumerGroup => {
+    kafka.getConsumerGroup(undefined, ['topic'] ).then(consumerGroup => {
       done('Failed to return error');
     }).catch((e) => {
       expect(e).to.be.not.null;
@@ -414,7 +414,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ groupId: 'id', topics: ['topic'], options: { groupId: 'differentId' } }).then(consumerGroup => {
+    kafka.getConsumerGroup('id', ['topic'], { groupId: 'differentId' }).then(consumerGroup => {
       done('Failed to return error');
     }).catch((e) => {
       expect(e).to.be.not.null;
@@ -438,7 +438,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ groupId: 'a' }).then(consumerGroup => {
+    kafka.getConsumerGroup('a' ).then(consumerGroup => {
       done('Failed to return error');
     }).catch((e) => {
       expect(e).to.be.not.null;
@@ -462,7 +462,7 @@ describe('Kafka', () => {
 
     const kafka = new _Kafka();
 
-    kafka.getConsumerGroup({ groupId: 'a' , topics: ['topic'] }).then(consumerGroup => {
+    kafka.getConsumerGroup('a', ['topic']).then(consumerGroup => {
       done('Failed to return error');
     }).catch((e) => {
       expect(e).to.be.not.null;

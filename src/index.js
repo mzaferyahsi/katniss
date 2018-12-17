@@ -7,6 +7,7 @@ import * as log4js from 'log4js';
 import { DiscoverRoute } from './routes/discover';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import { FileInfoController } from './controllers/file-info';
 
 const app = express(),
   port = 8001 || process.env.PORT;
@@ -17,8 +18,8 @@ logger.addContext('source', 'app');
 
 const router = express.Router();
 
-HeartBeatRoute.configure(router);
-DiscoverRoute.configure(router);
+new HeartBeatRoute().configure(router);
+new DiscoverRoute().configure(router);
 
 
 const corsConfig = config.cors || {
@@ -47,8 +48,9 @@ app.use('/api', router);
 
 app.listen(port, () => {
   logger.info(`App started at ${port}`);
-  console.log(`App started at ${port}`);
 });
 
 require('events').EventEmitter.defaultMaxListeners = 0;
 
+const fiController = new FileInfoController();
+fiController.initialize();

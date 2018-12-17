@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+/* eslint sonarjs/cognitive-complexity: "off" */
 
 import { KafkaClient, Consumer, Producer, ConsumerGroup } from 'kafka-node';
 import config from '../config/config';
@@ -64,9 +65,12 @@ export class Kafka {
     });
   }
 
-  getConsumerGroup ({ groupId = null, topics = null, options = {} }) {
+  getConsumerGroup (groupId, topics, options) {
     return new Promise((resolve, reject) => {
       try {
+
+        if(!options)
+          options = {};
 
         /* istanbul ignore else */
         if(!groupId && !options.groupId)
@@ -87,7 +91,7 @@ export class Kafka {
         /* istanbul ignore next */
         options.protocol = options.protocol ? options.protocol : ['roundrobin'];
         /* istanbul ignore next */
-        options.fromOffset = options.fromOffset ? options.fromOffset : 'latest';
+        options.fromOffset = options.fromOffset ? options.fromOffset : 'earliest';
         /* istanbul ignore next */
         options.commitOffsetsOnFirstJoin = options.commitOffsetsOnFirstJoin ? options.commitOffsetsOnFirstJoin : true;
         /* istanbul ignore next */
