@@ -51,6 +51,3 @@ app.listen(port, () => {
 });
 
 require('events').EventEmitter.defaultMaxListeners = 0;
-
-const fiController = new FileInfoController();
-fiController.initialize();
