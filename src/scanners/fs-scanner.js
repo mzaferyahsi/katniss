@@ -1,82 +1,122 @@
 /* jshint esversion: 6 */
 /* eslint no-sync: "off" */
-const fs = require('fs'),
-  fsPromises = fs.promises,
-  path = require('path'),
-  scanner = {};
+/* eslint array-callback-return: "off" */
 
-function pushArrays (source, items) {
-  const toPush = source.concat.apply([], items);
-  for (let i = 0, len = toPush.length; i < len; ++i)
-    source.push(toPush[i]);
-  return source;
-}
+import nodeFs from 'fs';
+import path from 'path';
+import * as log4js from 'log4js';
 
-function scanDirectory(filePath) {
-  return new Promise((resolve, reject) => {
-    fsPromises.readdir(filePath).then(subFiles => {
-      const subFilePromisses = subFiles.map(subFile => {
-        const fullPath = path.join(filePath, subFile);
-        return scanner.scan(fullPath).then(subFileScanResults => {
-          return subFileScanResults;
-        }).catch((err) => {
-          throw err;
-        });
-      });
+export class FsScanner {
+  constructor() {
+    this.fs = nodeFs;
+    this.fsPromises = nodeFs.promises;
 
-      Promise.all(subFilePromisses).then((results) => {
-        let discovered = [];
-        results.forEach(item => {
-          discovered = pushArrays(discovered, item);
-        });
-        resolve(results);
-      });
-    }).catch((err) => {
-      reject(err);
+    if (!this.fsPromises)
+      throw new Error("Fs doesn't support promises. Please use NodeJS v10.0.0 at least.");
+
+    this.logger = log4js.getLogger();
+    this.logger.addContext('source', 'FsScanner');
+  }
+
+  static resolvePath(_path) {
+    return new Promise((resolve, reject) => {
+      try {
+        if (_path[0] === '~')
+          return resolve(path.join(process.env.HOME, _path.slice(1)));
+
+        resolve(path.resolve(path.normalize(_path)));
+      }
+      catch (e) {
+        /* istanbul ignore next */
+        reject(e);
+      }
     });
-  });
-}
+  }
 
-scanner.resolvePath = (_path) => {
-  if (_path[0] === '~')
-    return path.join(process.env.HOME, _path.slice(1));
+  static pushArraysSync(source, items) {
+    const toPush = source.concat.apply([], items);
+    for (let i = 0, len = toPush.length; i < len; ++i)
+      source.push(toPush[i]);
+    return source;
+  }
 
-  return path.resolve(path.normalize(_path));
-};
+  discoverDirectory(filePath) {
+    return new Promise((resolve, reject) => {
+      this.fsPromises.readdir(filePath).then(subFiles => {
+        const subFilePromisses = subFiles.map(subFile => {
+          return new Promise((innerResolve, innerReject) => {
+            const fullPath = path.join(filePath, subFile);
+            this.discover(fullPath).then(subFileScanResults => {
+              innerResolve(subFileScanResults);
+            }).catch((err) => {
+              this.logger.error(err, new Error().stack);
+              innerReject(err);
+            });
+          });
+        });
 
-scanner.fsExists = (filePath) => new Promise((resolve, reject) => {
-  fsPromises.access(filePath, fs.constants.R_OK).then(() => {
-    resolve();
-  }).catch((err) => {
-    return reject(err);
-  });
-});
+        Promise.all(subFilePromisses)
+          .then((results) => {
+            let discovered = [];
+            results.forEach(item => {
+              discovered = FsScanner.pushArraysSync(discovered, item);
+            });
+            resolve(results);
+          })
+          .catch((e) => {
+            this.logger.error(e, new Error().stack);
+            reject(e);
+          });
+      }).catch((err) => {
+        this.logger.error(err, new Error().stack);
+        reject(err);
+      });
+    });
+  }
 
-scanner.scan = directoryPath => new Promise((resolve, reject) => {
-  const resolvedPath = scanner.resolvePath(directoryPath);
+  fsExists(filePath) {
+    return new Promise((resolve, reject) => {
+      this.fsPromises.access(filePath, this.fs.constants.R_OK).then(() => {
+        resolve();
+      }).catch((err) => {
+        this.logger.error(err, new Error().stack);
+        return reject(err);
+      });
+    });
+  }
 
-  scanner.fsExists(resolvedPath).then(() => {
-    fsPromises.lstat(resolvedPath).then(stats => {
-      let _filePaths = [];
-      _filePaths.push(resolvedPath);
+  discover(directoryPath) {
+    return new Promise((resolve, reject) => {
+      FsScanner.resolvePath(directoryPath).then((resolvedPath) => {
+        this.fsExists(resolvedPath).then(() => {
+          this.fsPromises.lstat(resolvedPath).then(stats => {
+            let _filePaths = [];
+            _filePaths.push(resolvedPath);
 
-      if (stats.isDirectory())
-        scanDirectory(resolvedPath).then(results => {
-          _filePaths = pushArrays(_filePaths, results);
-          resolve(_filePaths);
+            if (stats.isDirectory())
+              this.discoverDirectory(resolvedPath).then(results => {
+                _filePaths = FsScanner.pushArraysSync(_filePaths, results);
+                resolve(_filePaths);
+              }).catch((err) => {
+                this.logger.error(err, new Error().stack);
+                reject(err);
+              });
+            else
+              return resolve(_filePaths);
+
+          }).catch((err) => {
+            this.logger.error(err, new Error().stack);
+            reject(err);
+          });
         }).catch((err) => {
+          this.logger.error(err, new Error().stack);
           reject(err);
         });
-      else
-        return resolve(_filePaths);
+      }).catch((e) => {
+        this.logger.error(e, new Error().stack);
+        reject(e);
+      });
 
-    }).catch((err) => {
-      reject(err);
     });
-  }).catch((err) => {
-    reject(err);
-  });
-
-});
-
-module.exports = scanner;
+  }
+}

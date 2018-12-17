@@ -27,14 +27,30 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
+      - run: sudo npm i -g cross-env
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+
+      - run: mkdir ~/junit
+
       # run tests!
-      - run: yarn test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - run:
+          command: npm run ci-test
+          environment:
+            MOCHA_FILE: ./junit/test-results.xml
+          when: always
+
+      # Upload coverage results to Coveralls
+      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+      # Store tests results for CircleCI
+      - store_test_results:
+          path: ./junit
+      - store_artifacts:
+          path: ./junit
 
 
 

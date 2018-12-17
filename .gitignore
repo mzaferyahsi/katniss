@@ -62,3 +62,5 @@ typings/
 .DS_Store
 .idea
 .scannerwork
+junit/
+dist/

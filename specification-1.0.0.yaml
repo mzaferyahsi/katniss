@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: Katniss API
+  description: A smart way to analyse your files.
+  version: 1.0.0
+  contact:
+    name: M. Zafer Yahsi
+    url: https://github.com/mzaferyahsi
+paths:
+  /discover:
+    post:
+      summary: Start discovering files and folders
+      description: By creating a discover request, Katniss will discover the given path for files and folders. The results will be pushed to relevant Kafka topic.
+      operationId: discover-post
+      requestBody:
+        description: Required parameters for starting a file and folder discovery
+        content:
+          "application/json":
+            schema:
+              properties:
+                path:
+                  type: string
+                  description: Absolute path to start discovery
+              required:
+                - path
+      responses:
+        201:
+          description: Created - Discovery started
+          content:
+            "application/json":
+              schema:
+                properties:
+                  id:
+                    type: string
+                    description: Unique identification of discovery process
+                  message:
+                    type: string
+                    description: Action result message
+                required:
+                  - id
+        400:
+          description: Bad Request
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/error'
+        500:
+          description: Internal Server Error
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/error'
+components:
+  schemas:
+    errorObject:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        severity:
+          type: string
+          description: Severity level of the error
+          enum:
+          - Info
+          - Warning
+          - Error
+          - Critical
+    error:
+      description: Error object
+      allOf: 
+      - $ref: '#/components/schemas/errorObject'
+      - type: object
+        properties:
+          innerErrors:
+            type: array
+            items:
+              $ref: '#/components/schemas/errorObject'
