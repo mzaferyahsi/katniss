@@ -7,7 +7,8 @@
     "maxAsyncRequests": 5000,
     "topics": {
       "discoveredFiles" : "katniss-discovered"
-    }
+    },
+    "consumerGroupId": "katniss"
   },
   "log4js": {
     "appenders": {

@@ -36,14 +36,15 @@ describe('Discover Route tests', ()=> {
     const router = express.Router();
     const spyRouter = sandbox.spy(router, 'post');
 
-    DiscoverRoute.configure(router);
+    new DiscoverRoute().configure(router);
     expect(spyRouter.calledOnce).to.be.ok;
 
     done();
   });
 
   it('should test post discover endpoint', done => {
-    const stubDiscoverController = sandbox.stub(DiscoverRoute.controller, 'discover');
+    const discoverRoute = new DiscoverRoute();
+    const stubDiscoverController = sandbox.stub(discoverRoute.controller, 'discover');
     stubDiscoverController.callsFake((path) => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -70,7 +71,7 @@ describe('Discover Route tests', ()=> {
       }
     };
 
-    DiscoverRoute.handlePost(request, response);
+    discoverRoute.handlePost(request, response);
   });
 
   it('should fail post discover endpoint without path in the body', done => {
@@ -91,6 +92,6 @@ describe('Discover Route tests', ()=> {
       }
     };
 
-    DiscoverRoute.handlePost(request, response);
+    new DiscoverRoute().handlePost(request, response);
   });
 });

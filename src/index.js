@@ -17,8 +17,8 @@ logger.addContext('source', 'app');
 
 const router = express.Router();
 
-HeartBeatRoute.configure(router);
-DiscoverRoute.configure(router);
+new HeartBeatRoute().configure(router);
+new DiscoverRoute().configure(router);
 
 
 const corsConfig = config.cors || {
@@ -47,8 +47,6 @@ app.use('/api', router);
 
 app.listen(port, () => {
   logger.info(`App started at ${port}`);
-  console.log(`App started at ${port}`);
 });
 
 require('events').EventEmitter.defaultMaxListeners = 0;
-

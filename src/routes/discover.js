@@ -3,30 +3,16 @@
 import * as log4js from 'log4js';
 import { DiscoverController } from '../controllers/discover';
 
-let logger;
-let controller;
-
 export class DiscoverRoute {
 
-  static get logger() {
-    /* istanbul ignore else */
-    if(!logger) {
-      logger = log4js.getLogger();
-      logger.addContext('source', 'DiscoverRoute');
-    }
-
-    return logger;
+  constructor () {
+    this.logger = log4js.getLogger();
+    this.logger.addContext('source', 'DiscoverRoute');
+    this.controller = new DiscoverController();
   }
 
-  static get controller() {
-    if(!controller)
-      controller = new DiscoverController();
-
-    return controller;
-  }
-
-  static handlePost(request, response) {
-    DiscoverRoute.logger.debug(request.body);
+  handlePost(request, response) {
+    this.logger.debug(request.body);
 
     /* istanbul ignore else */
     if (!request.body.path)
@@ -36,15 +22,15 @@ export class DiscoverRoute {
         severity: 'error'
       });
 
-    DiscoverRoute.controller.discover(request.body.path).then((id) => {
+    this.controller.discover(request.body.path).then((id) => {
       response.json({
         id: id
       });
     });
   }
 
-  static configure(router) {
-    router.post('/discover', DiscoverRoute.handlePost);
-    DiscoverRoute.logger.debug('Discover route configured.');
+  configure(router) {
+    router.post('/discover', this.handlePost.bind(this));
+    this.logger.debug('Discover route configured.');
   }
 }

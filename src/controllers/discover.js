@@ -35,7 +35,7 @@ export class DiscoverController {
             });
 
             producer.on('ready', () => {
-              logger.debug('Pushing discovered paths to kafka');
+              logger.debug(`Pushing paths to kafka for ${id}`);
 
               for (let i = 0; i < paths.length; i=i+100) {
                 const payload = [];
@@ -43,7 +43,7 @@ export class DiscoverController {
                 for (let j = 0; j < 100  && i+j < paths.length; j++) {
                   const msg = {
                     topic: config.kafka.topics.discoveredFiles,
-                    messages: path[i+j]
+                    messages: paths[i+j]
                   };
 
                   payload.push(msg);
@@ -57,6 +57,8 @@ export class DiscoverController {
                   }
                 });
               }
+
+              logger.debug(`Completed pushing paths for ${id}`);
             });
 
           }).catch((error) => {
