@@ -59,9 +59,9 @@ jobs:
 
       # Store tests results for CircleCI
       - store_test_results:
-          path: ./junit
+          path: ./agent/junit
       - store_artifacts:
-          path: ./junit
+          path: ./agent/junit
 
     notify:
       webhooks:
@@ -118,9 +118,9 @@ jobs:
 
       # Store tests results for CircleCI
       - store_test_results:
-          path: ./junit
+          path: ./app/junit
       - store_artifacts:
-          path: ./junit
+          path: .app/junit
 
     notify:
       webhooks:
