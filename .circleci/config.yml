@@ -33,11 +33,11 @@ jobs:
           - v1-dependencies-agent
 
       - run: 
-        command: yarn install
-        working_directory: ~/repo/agent
+          command: yarn install
+          working_directory: ~/repo/agent
       - run: 
-        command: sudo npm i -g cross-env
-        working_directory: ~/repo/agent
+          command: sudo npm i -g cross-env
+          working_directory: ~/repo/agent
 
       - save_cache:
           paths:
@@ -46,16 +46,16 @@ jobs:
 
       # run tests!
       - run:
-        working_directory: ~/repo/agent
-        command: npm run ci-test
-        environment:
-          MOCHA_FILE: ./junit/test-results.xml
-        when: always
+          working_directory: ~/repo/agent
+          command: npm run ci-test
+          environment:
+            MOCHA_FILE: ./junit/test-results.xml
+          when: always
 
       # Upload coverage results to Coveralls
       - run: 
-        command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-        working_directory: ~/repo/agent
+          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+          working_directory: ~/repo/agent
 
       # Store tests results for CircleCI
       - store_test_results:
@@ -86,11 +86,11 @@ jobs:
           - v1-dependencies-app
 
       - run: 
-        command: yarn install
-        working_directory: ~/repo/app
+          command: yarn install
+          working_directory: ~/repo/app
       - run: 
-        command: sudo npm i -g cross-env
-        working_directory: ~/repo/app
+          command: sudo npm i -g cross-env
+          working_directory: ~/repo/app
 
       - save_cache:
           paths:
@@ -99,16 +99,16 @@ jobs:
 
       # run tests!
       - run:
-        working_directory: ~/repo/app
-        command: npm run ci-test
-        environment:
-          MOCHA_FILE: ./junit/test-results.xml
-        when: always
+          working_directory: ~/repo/app
+          command: npm run ci-test
+          environment:
+            MOCHA_FILE: ./junit/test-results.xml
+          when: always
 
       # Upload coverage results to Coveralls
       - run: 
-        command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-        working_directory: ~/repo/app
+          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+          working_directory: ~/repo/app
 
       # Store tests results for CircleCI
       - store_test_results:
