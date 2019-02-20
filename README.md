@@ -36,8 +36,8 @@ locally with [docker-elk](https://github.com/deviantony/docker-elk).
 [link-circleci]:https://circleci.com/gh/mzaferyahsi/katniss
 [img-circleci]:https://circleci.com/gh/mzaferyahsi/katniss.svg?style=svg
 
-[link-coverage]:https://coveralls.io/github/mzaferyahsi/katniss?branch=master
-[img-coverage]:https://coveralls.io/repos/github/mzaferyahsi/katniss/badge.svg?branch=master
+[link-coverage]:https://codecov.io/gh/mzaferyahsi/katniss
+[img-coverage]:https://codecov.io/gh/mzaferyahsi/katniss/branch/master/graph/badge.svg
 
 [link-agent-dependencies]:https://david-dm.org/mzaferyahsi/katniss?path=agent
 [img-agent-dependencies]:https://david-dm.org/mzaferyahsi/katniss/status.svg?path=agent
@@ -50,5 +50,3 @@ locally with [docker-elk](https://github.com/deviantony/docker-elk).
 
 [link-app-devdependencies]:https://david-dm.org/mzaferyahsi/katniss?type=dev&path=app
 [img-app-devdependencies]:https://david-dm.org/mzaferyahsi/katniss/dev-status.svg?path=app
-
-
