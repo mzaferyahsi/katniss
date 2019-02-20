@@ -1,0 +1,34 @@
+{
+  "application": {
+    "name" : "katniss-app"
+  },
+  "kafka": {
+    "hosts": "192.168.0.150:9092",
+    "maxAsyncRequests": 5000,
+    "topics": {
+      "discoveredFiles" : "katniss-discovered"
+    },
+    "consumerGroupId": "katniss-app"
+  },
+  "log4js": {
+    "appenders": {
+      "out": {
+        "type": "stdout"
+      },
+      "logstash": {
+        "type": "@log4js-node/logstashudp",
+        "host": "localhost",
+        "port": 5000
+      }
+    },
+    "categories": {
+      "default": {
+        "appenders": [
+          "out",
+          "logstash"
+        ],
+        "level": "debug"
+      }
+    }
+  }
+}
