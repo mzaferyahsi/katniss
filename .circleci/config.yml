@@ -36,7 +36,7 @@ jobs:
           command: yarn install
           working_directory: ~/repo/agent
       - run: 
-          command: sudo npm i -g cross-env
+          command: sudo npm i -g cross-env codecov
           working_directory: ~/repo/agent
 
       - save_cache:
@@ -93,7 +93,7 @@ jobs:
           command: yarn install
           working_directory: ~/repo/app
       - run: 
-          command: sudo npm i -g cross-env
+          command: sudo npm i -g cross-env codecov
           working_directory: ~/repo/app
 
       - save_cache:
