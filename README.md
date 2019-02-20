@@ -12,8 +12,13 @@ A smart way to analyse your files.
 
 ## Applications
 
-Katniss consists two applications. First one is `agent`, which should be run on the machine that has direct 
-file system access to the files. Second application is `app`, which analyses the files, finds duplicates. 
+Katniss consists following applications.
+
+### Agent
+`agent` should be run on the machine that has direct file system access to the files.
+
+### App
+`app` analyses the files, finds duplicates. 
 For `app` to be able to analyse files, `agent` needs to run and send the results to relevant kafka topic so
 `app` can read and analyse them.
 
