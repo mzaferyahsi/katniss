@@ -12,7 +12,7 @@ workflows:
       - app
 jobs:
   checkout:
-        docker:
+    docker:
       # specify the version you desire here
       - image: circleci/node:10-stretch
       
