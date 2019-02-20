@@ -7,25 +7,9 @@ workflows:
   version: 2
   agent-and-app:
     jobs:
-      - checkout
       - agent
       - app
 jobs:
-  checkout:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:10-stretch
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
   agent:
     docker:
       # specify the version you desire here
@@ -36,35 +20,42 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo/agent
+    working_directory: ~/repo/
 
     steps:
-      # - checkout
+      - checkout
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-agent-{{ checksum "agent/package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v1-dependencies-agent
 
-      - run: yarn install
-      - run: sudo npm i -g cross-env
+      - run: 
+        command: yarn install
+        working_directory: ~/repo/agent
+      - run: 
+        command: sudo npm i -g cross-env
+        working_directory: ~/repo/agent
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - agent/node_modules
+          key: v1-dependencies-agent-{{ checksum "agent/package.json" }}
 
       # run tests!
       - run:
-          command: npm run ci-test
-          environment:
-            MOCHA_FILE: ./junit/test-results.xml
-          when: always
+        working_directory: ~/repo/agent
+        command: npm run ci-test
+        environment:
+          MOCHA_FILE: ./junit/test-results.xml
+        when: always
 
       # Upload coverage results to Coveralls
-      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - run: 
+        command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+        working_directory: ~/repo/agent
 
       # Store tests results for CircleCI
       - store_test_results:
@@ -82,35 +73,42 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo/app
+    working_directory: ~/repo
 
     steps:
-      # - checkout
+      - checkout
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-app-{{ checksum "app/package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v1-dependencies-app
 
-      - run: yarn install
-      - run: sudo npm i -g cross-env
+      - run: 
+        command: yarn install
+        working_directory: ~/repo/app
+      - run: 
+        command: sudo npm i -g cross-env
+        working_directory: ~/repo/app
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - app/node_modules
+          key: v1-dependencies-app-{{ checksum "app/package.json" }}
 
       # run tests!
       - run:
-          command: npm run ci-test
-          environment:
-            MOCHA_FILE: ./junit/test-results.xml
-          when: always
+        working_directory: ~/repo/app
+        command: npm run ci-test
+        environment:
+          MOCHA_FILE: ./junit/test-results.xml
+        when: always
 
       # Upload coverage results to Coveralls
-      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - run: 
+        command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+        working_directory: ~/repo/app
 
       # Store tests results for CircleCI
       - store_test_results:
