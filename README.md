@@ -15,12 +15,15 @@ A smart way to analyse your files.
 Katniss consists following applications.
 
 ### Agent
-`agent` should be run on the machine that has direct file system access to the files.
+`agent` does file system related actions (like finding files, getting information like size and hash of the 
+file). So, it should be run on the machine that has direct file system access to the files. Files discovered
+by `agent` will be sent to relevant kafka topic with the absolute path. If you will be running multiple 
+agents, please make sure to have the files mounted/accessible in the same location across all agents.
 
 ### App
-`app` analyses the files, finds duplicates. 
+`app` analyses the files (like finding duplicates) that have been discovered by agent. 
 For `app` to be able to analyse files, `agent` needs to run and send the results to relevant kafka topic so
-`app` can read and analyse them.
+`app` can do the analysis on the results.
 
 ## Running development environment
 
