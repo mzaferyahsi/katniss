@@ -4,13 +4,10 @@ A smart way to analyse your files.
 
 ## Build and Coverage Reports
 
-[![CircleCI][img-circleci]][link-circleci]
-
-
-| Coverage                                            | Build                                      | Agent                                                                              | App                                                                            |
-|-----------------------------------------------------|--------------------------------------------|------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [![Coverage Status][[img-coverage]]][link-coverage] | [![CircleCI][img-circleci]][link-circleci] | [![dependencies Status][img-agent-dependencies]][link-agent-dependencies]          | [![dependencies Status][img-app-dependencies]][link-app-dependencies]          | 
-|                                                     |                                            | [![devDependencies Status][img-agent-devdependencies]][link-agent-devdependencies] | [![devDependencies Status][img-app-devdependencies]][link-app-devdependencies] |
+| Build                                      | Coverage                                            | Agent                                                                              | App                                                                            |
+|:--------------------------------------------:|:-----------------------------------------------------:|:------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:|
+| [![CircleCI][img-circleci]][link-circleci] | [![Coverage Status][img-coverage]][link-coverage]   | [![dependencies Status][img-agent-dependencies]][link-agent-dependencies]          | [![dependencies Status][img-app-dependencies]][link-app-dependencies]          | 
+|                                            |                                                     | [![devDependencies Status][img-agent-devdependencies]][link-agent-devdependencies] | [![devDependencies Status][img-app-devdependencies]][link-app-devdependencies] |
 
 
 ## Applications
