@@ -7,6 +7,7 @@ cache: npm
 
 before_install:
   - "npm i -g cross-env codecov"
+  - docker pull keymetrics/pm2:10-jessie
 
 install:
   - cd agent && npm install
@@ -18,4 +19,8 @@ script:
   - cd agent && npm run travis-test
   - cd ../
   - cd app && npm run travis-test
+  - cd ../
+  - cd agent && ./build-image.sh
+  - cd ../
+  - cd app && ./build-image.sh
   - cd ../
