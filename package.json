@@ -1,0 +1,20 @@
+{
+  "name": "katniss",
+  "version": "1.0.0",
+  "description": "A smart way to analyse your files",
+  "main": "index.js",
+  "scripts": {
+    "test-app": "cd app && npm test; cd ../",
+    "test-agent": "cd agent && npm test; cd ../"
+  },
+  "repository": "github.com:mzaferyahsi/katniss.git",
+  "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
+  "license": "MIT",
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "test-agent",
+    "test-app"
+  ]
+}
