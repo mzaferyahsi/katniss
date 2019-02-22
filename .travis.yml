@@ -12,6 +12,7 @@ cache:
 before_install:
   - "npm i -g cross-env codecov"
   - docker pull keymetrics/pm2:10-jessie
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 install:
   - cd agent && npm install
