@@ -8,18 +8,16 @@ import log4js from 'log4js';
 export class Kafka {
 
   static getLogger() {
-    if(!Kafka.logger) {
-      Kafka.logger = log4js.getLogger();
-      Kafka.logger.addContext('source', 'HeartBeatRoute');
-    }
+    if (!Kafka.logger)
+      Kafka.logger = new KafkaLog4JsLogger().logger;
 
     return Kafka.logger;
   }
 
-  static getClient () {
+  static getClient() {
     return new Promise((resolve, reject) => {
       try {
-        const client = new KafkaClient({ kafkaHost: config.kafka.hosts, maxAsyncRequests:config.kafka.maxAsyncRequests });
+        const client = new KafkaClient({ kafkaHost: config.kafka.hosts, maxAsyncRequests: config.kafka.maxAsyncRequests });
 
         resolve(client);
       } catch (e) {
@@ -29,7 +27,7 @@ export class Kafka {
     });
   }
 
-  static getProducer (options, customPartitioner) {
+  static getProducer(options, customPartitioner) {
     return new Promise((resolve, reject) => {
       this.getClient().then((client) => {
         try {
@@ -46,7 +44,7 @@ export class Kafka {
     });
   }
 
-  static getConsumer (payloads, options) {
+  static getConsumer(payloads, options) {
     return new Promise((resolve, reject) => {
       this.getClient().then((client) => {
         try {
@@ -63,25 +61,25 @@ export class Kafka {
     });
   }
 
-  static getConsumerGroup (groupId, topics, options) {
+  static getConsumerGroup(groupId, topics, options) {
     return new Promise((resolve, reject) => {
       try {
 
-        if(!options)
+        if (!options)
           options = {};
 
         /* istanbul ignore else */
-        if(!groupId && !options.groupId)
+        if (!groupId && !options.groupId)
           return reject(new Error('No groupId defined.'));
 
         /* istanbul ignore else */
-        if(!topics)
+        if (!topics)
           return reject(new Error('No topics defined.'));
 
         /* istanbul ignore else */
-        if(groupId && !options.groupId)
+        if (groupId && !options.groupId)
           options.groupId = groupId;
-        else if(groupId && options.groupId && groupId !== options.groupId)
+        else if (groupId && options.groupId && groupId !== options.groupId)
           return reject(new Error('groupId parameter and groupId in options does not match. Please use one of the two.'));
 
         /* istanbul ignore next */
