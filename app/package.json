@@ -1,6 +1,6 @@
 {
   "name": "katniss-app",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A smart way to analyse your files",
   "main": "index.js",
   "scripts": {
