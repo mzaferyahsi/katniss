@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test-app": "cd app && npm test && cd ../",
-    "test-agent": "cd agent && npm test "cd app && npm test && cd ../" cd ../"
+    "test-agent": "cd agent && npm test && cd ../"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
