@@ -3,7 +3,11 @@ language: node_js
 node_js:
   - "10"
 
-cache: npm
+cache:
+  - npm
+  - agent/node_modules
+  - app/node_modules
+  - $(npm config get prefix)/lib/node_modules
 
 before_install:
   - "npm i -g cross-env codecov"
