@@ -24,7 +24,7 @@ script:
   - cd ../
   - cd app && npm run travis-test
   - cd ../
-  - cd agent && ./build-image.sh
+  - cd agent && ./build-image.sh && ./push-image.sh
   - cd ../
-  - cd app && ./build-image.sh
+  - cd app && ./build-image.sh && ./push-image.sh
   - cd ../

@@ -13,7 +13,7 @@ ENV NPM_CONFIG_LOGLEVEL warn
 
 RUN cd app && npm install --production
 
-RUN ls -al -R
+RUN ls -al -R app/
 
 VOLUME [ "/app/config" ]
 EXPOSE 8080
