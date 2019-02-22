@@ -1,9 +1,8 @@
 /* jshint esversion: 6 */
 /* eslint sonarjs/cognitive-complexity: "off" */
-
+import { KafkaLog4JsLogger } from './kafka-logger';
 import { KafkaClient, Consumer, Producer, ConsumerGroup } from 'kafka-node';
 import config from '../config/config';
-import log4js from 'log4js';
 
 export class Kafka {
 
