@@ -13,7 +13,7 @@ install:
   - cd ../
 
 script:
-  - cd agent && MOCHA_FILE="./junit/test-results.xml" npm run travis-test
+  - cd agent && npm run travis-test
   - cd ../
-  - cd app && MOCHA_FILE="./junit/test-results.xml" npm run travis-test
+  - cd app && npm run travis-test
   - cd ../

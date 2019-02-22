@@ -9,7 +9,6 @@
     "start": "npm run build & nodemon ./dst/index.js",
     "build": "rimraf dist/ && babel src --out-dir dist/ --copy-files --ignore \"src/**/*.spec.js\" --source-maps && cp package.json ./dist && find dist/ -name '*.spec.js' -delete && rm -r dist/spec",
     "serve": "node index.js",
-    "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov > coverage.lcov && codecov",
     "travis-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp test && nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "nodemon --exec \"npm test && npm run build && npm run serve-dev\" -e js,json --ignore dist",
     "serve-dev": "node ./dist/index.js"
@@ -55,7 +54,6 @@
     "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
     "minimatch": "^3.0.4",
-    "mocha-junit-reporter": "^1.18.0",
     "nyc": "^13.1.0",
     "proxyquire": "^2.1.0",
     "rimraf": "^2.6.2",

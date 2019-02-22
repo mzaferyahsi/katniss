@@ -1,4 +1,2 @@
 --require @babel/register
 --compilers js:@babel/register
---reporter mocha-junit-reporter
---reporter-options mochaFile=./junit/result.xml
