@@ -3,18 +3,27 @@ language: node_js
 node_js:
   - "10"
 
+before_cache:
+  # Save tagged docker images
+  - >
+    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep pm2 | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+
 cache:
-  - npm
-  - agent/node_modules
-  - app/node_modules
-  - $(npm config get prefix)/lib/node_modules
+  bundler: true
+  directories:
+    - npm
+    - agent/node_modules
+    - app/node_modules
+    - $(npm config get prefix)/lib/node_modules
+    - $HOME/docker
 
 before_install:
   - "npm i -g cross-env codecov"
   - docker pull keymetrics/pm2:10-jessie
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
-install:
+  install:
   - cd agent && npm install
   - cd ../
   - cd app && npm install
