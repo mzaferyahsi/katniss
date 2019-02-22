@@ -6,7 +6,7 @@ A smart way to analyse your files.
 
 | Build                                      | Coverage                                            | Agent                                                                              | App                                                                            |
 |:--------------------------------------------:|:-----------------------------------------------------:|:------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:|
-| [![CircleCI][img-circleci]][link-circleci] | [![Coverage Status][img-coverage]][link-coverage]   | [![dependencies Status][img-agent-dependencies]][link-agent-dependencies]          | [![dependencies Status][img-app-dependencies]][link-app-dependencies]          | 
+| [![Build Status][img-build]][link-build] | [![Coverage Status][img-coverage]][link-coverage]   | [![dependencies Status][img-agent-dependencies]][link-agent-dependencies]          | [![dependencies Status][img-app-dependencies]][link-app-dependencies]          | 
 |                                            |                                                     | [![devDependencies Status][img-agent-devdependencies]][link-agent-devdependencies] | [![devDependencies Status][img-app-devdependencies]][link-app-devdependencies] |
 
 
@@ -33,8 +33,8 @@ as well. You can either update the configuration file to not to use Logstash or 
 locally with [docker-elk](https://github.com/deviantony/docker-elk).
 
 <!--Links -->
-[link-circleci]:https://circleci.com/gh/mzaferyahsi/katniss
-[img-circleci]:https://circleci.com/gh/mzaferyahsi/katniss.svg?style=svg
+[link-build]:https://travis-ci.org/mzaferyahsi/katniss
+[img-build]:https://travis-ci.org/mzaferyahsi/katniss.svg?branch=master
 
 [link-coverage]:https://codecov.io/gh/mzaferyahsi/katniss
 [img-coverage]:https://codecov.io/gh/mzaferyahsi/katniss/branch/master/graph/badge.svg
