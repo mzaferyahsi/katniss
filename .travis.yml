@@ -1,0 +1,19 @@
+dist: trusty
+language: node_js
+node_js:
+  - "10"
+
+before_install:
+  - "npm i -g cross-env codecov"
+
+install:
+  - cd agent && npm install
+  - cd ../
+  - cd app && npm install
+  - cd ../
+
+script:
+  - cd agent && MOCHA_FILE="./junit/test-results.xml" npm run travis-test
+  - cd ../
+  - cd app && MOCHA_FILE="./junit/test-results.xml" npm run travis-test
+  - cd ../
