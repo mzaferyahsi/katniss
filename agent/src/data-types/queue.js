@@ -6,7 +6,9 @@ export class Queue {
   }
 
   add (item) {
-    this.data.unshift(item);
+    /* istanbul ignore else */
+    if(item)
+      this.data.unshift(item);
   }
 
   peek() {
@@ -19,6 +21,10 @@ export class Queue {
 
   length() {
     return this.data.length;
+  }
+
+  clear() {
+    this.data = [];
   }
 
 }

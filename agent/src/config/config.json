@@ -3,12 +3,14 @@
     "name" : "katniss-agent"
   },
   "kafka": {
-    "hosts": "192.168.0.150:9092",
+    "hosts": "kafka-localhost:9092",
     "maxAsyncRequests": 5000,
     "topics": {
-      "discoveredFiles" : "katniss-discovered"
+      "discoveredFiles" : "katniss-discovered",
+      "files" : "katniss-files"
     },
-    "consumerGroupId": "katniss-agent"
+    "consumerGroupId": "katniss-agent",
+    "producerInterval": 1000
   },
   "log4js": {
     "appenders": {

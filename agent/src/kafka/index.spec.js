@@ -434,4 +434,144 @@ describe('Kafka', () => {
     });
   });
 
+  it('should return consumer group stream', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        this.options = options;
+        this.topics = topics;
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream('id', ['topic'], {}).then(consumerGroupStream => {
+
+      expect(consumerGroupStream).to.be.not.null;
+      expect(consumerGroupStream.options.kafkaHost).to.be.eq(config.kafka.hosts);
+      expect(consumerGroupStream.topics).to.be.a('Array');
+      expect(consumerGroupStream.topics.length).to.be.eq(1);
+      done();
+    }).catch((e) => {
+      done(e);
+    });
+  });
+
+  it('should fail returning consumer group stream with no topics', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        this.options = options;
+        this.topics = topics;
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream('id',['topic'], {}).then(consumerGroupStream => {
+
+      expect(consumerGroupStream).to.be.not.null;
+      expect(consumerGroupStream.options.kafkaHost).to.be.eq(config.kafka.hosts);
+      expect(consumerGroupStream.topics).to.be.a('Array');
+      expect(consumerGroupStream.topics.length).to.be.eq(1);
+      done();
+    }).catch((e) => {
+      done(e);
+    });
+  });
+
+  it('should fail returning consumer group stream without groupId', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        this.options = options;
+        this.topics = topics;
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream(undefined, ['topic'] ).then(consumerGroupStream => {
+      done(failedToReturnError);
+    }).catch((e) => {
+      expect(e).to.be.not.null;
+      done();
+    });
+  });
+
+  it('should fail returning consumer group stream with ambiguous groupId', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        this.options = options;
+        this.topics = topics;
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream('id', ['topic'], { groupId: 'differentId' }).then(consumerGroupStream => {
+      done(failedToReturnError);
+    }).catch((e) => {
+      expect(e).to.be.not.null;
+      done();
+    });
+  });
+
+  it('should fail returning consumer group stream without topics', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        this.options = options;
+        this.topics = topics;
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream('a' ).then(consumerGroupStream => {
+      done(failedToReturnError);
+    }).catch((e) => {
+      expect(e).to.be.not.null;
+      done();
+    });
+  });
+
+
+  it('should fail initiating consumerGroupStream', done => {
+    class StubConsumerGroupStream {
+      constructor(options, topics) {
+        throw new Error('ERROR!');
+      }
+    }
+
+    const _Kafka = proxyquire('./index', {
+      'kafka-node': {
+        ConsumerGroupStream: StubConsumerGroupStream
+      }
+    }).Kafka;
+
+    _Kafka.getConsumerGroupStream('a', ['topic']).then(consumerGroupStream => {
+      done(failedToReturnError);
+    }).catch((e) => {
+      expect(e).to.be.not.null;
+      done();
+    });
+  });
+
 });

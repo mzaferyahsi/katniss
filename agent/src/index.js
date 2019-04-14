@@ -6,6 +6,7 @@ import * as log4js from 'log4js';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { HeartBeatRoute } from './api/heartbeat';
+import { DiscoveriesRoute } from './api/discoveries';
 
 const app = express(),
   port = 8001 || process.env.PORT;
@@ -16,6 +17,7 @@ logger.addContext('source', 'app');
 
 const router = express.Router();
 HeartBeatRoute.configure(router);
+DiscoveriesRoute.configure(router);
 
 const corsConfig = config.cors || {
   'origin': '*',

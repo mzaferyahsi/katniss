@@ -1,23 +1,32 @@
 /* global it, describe, before, after, beforeEach, afterEach */
 /* eslint no-unused-expressions: "off" */
 /* eslint no-unused-vars: "off" */
+/* eslint no-empty-function: "off" */
+/* eslint no-useless-constructor: "off" */
 /* eslint sonarjs/no-identical-functions: "off" */
-/* eslint sonarjs/no-duplicate-string: "off" */
 
+import { DiscoverController } from './discover-controller';
 import { expect } from 'chai';
+import config from '../config/config';
 import sinon from 'sinon';
-import express from 'express';
-import {TestLog4JConfig} from '../spec/log4js';
-import {DiscoverController} from "./discover-controller";
-import {Kafka} from "../kafka";
+import proxyquire from 'proxyquire';
+import { TestLog4JConfig } from '../spec/log4js';
+import { FSUtility } from '../fs/utility';
+import { GenericKafkaProducer } from '../kafka/generic-producer';
 
-describe('Discover Controller tests', ()=> {
+describe('DiscoverController', () => {
 
   let sandbox = null;
+  let addStub = null;
 
   before(() => {
-    sandbox = sinon.createSandbox();
     TestLog4JConfig.configure('fatal');
+    sandbox = sinon.createSandbox();
+  });
+
+  beforeEach(() => {
+    addStub = sandbox.stub(GenericKafkaProducer, 'add');
+    addStub.resolves(undefined);
   });
 
   after(() => {
@@ -30,184 +39,129 @@ describe('Discover Controller tests', ()=> {
     sandbox.restore();
   });
 
-  it('should initialize controller', done => {
+  it('should initialize DiscoverController', done => {
     try {
-      const controller = new DiscoverController();
-      expect(controller).to.be.not.null;
-      expect(controller).to.be.a('Object');
-      controller.unschedule();
+      const fsDiscover = new DiscoverController();
+
+      expect(fsDiscover).to.be.not.null;
       done();
+    } catch(e) {
+      done(e);
+    }
+  });
+
+  it('should discover current file', done => {
+    try {
+      const fsDiscover = new DiscoverController();
+
+      fsDiscover.discover(__filename);
+      setTimeout(() => {
+        expect(addStub.called).to.be.true;
+        done();
+      },30);
+    } catch(e) {
+      done(e);
+    }
+  });
+
+  it('should discover current file twice', done => {
+    try {
+      const fsDiscover = new DiscoverController();
+
+      fsDiscover.discover(__filename);
+      fsDiscover.discover(__filename);
+
+      setTimeout(() => {
+        expect(addStub.called).to.be.true;
+        expect(addStub.calledTwice).to.be.true;
+        done();
+      },30);
+
+    } catch(e) {
+      done(e);
+    }
+  });
+
+  it('should fail discovering file', done => {
+    const stub = sandbox.stub(FSUtility, 'resolvePath');
+    stub.rejects(new Error('ERROR!!'));
+
+    try {
+      const fsDiscover = new DiscoverController();
+
+      const spy = sandbox.spy(fsDiscover.logger, 'error');
+
+      fsDiscover.discover(__filename);
+      setTimeout(() => {
+        expect(spy.called).to.be.true;
+        done();
+      }, 10);
     } catch (e) {
       done(e);
     }
   });
 
-  it('should add items to queue', done => {
-    class MockKafkaProducer {
-      on(action, callback) {
-        if(action === 'ready')
-          setTimeout(callback, 10);
+  it('should fail discovering file when processing queue', done => {
+    const stub = sandbox.stub(FSUtility, 'isDirectory');
+    stub.rejects(new Error('ERROR!!'));
 
-      }
+    try {
+      const fsDiscover = new DiscoverController();
 
-      send (payload, callback) {
-        setTimeout(() => {
-          callback(null, payload);
-        }, 10);
-      }
+      const spy = sandbox.spy(fsDiscover.logger, 'error');
+
+      fsDiscover.discover(__filename);
+      setTimeout(() => {
+        expect(spy.called).to.be.true;
+        done();
+      }, 10);
+    } catch (e) {
+      done(e);
     }
-
-    const controller = new DiscoverController();
-    expect(controller).to.be.not.null;
-    expect(controller).to.be.a('Object');
-    controller.unschedule();
-
-    const stub = sandbox.stub(Kafka, 'getProducer');
-    stub.resolves(new MockKafkaProducer());
-    const queueSpy = sandbox.spy(controller.queue, 'add');
-
-    controller.discoverExecutor(__filename);
-
-    expect(queueSpy.called).to.be.true;
-    done();
   });
 
-  it('should dequeue', done => {
-    class MockKafkaProducer {
-      on(action, callback) {
-        if(action === 'ready')
-          setTimeout(callback, 10);
+  it('should discover current directory', done => {
+    try {
 
-      }
+      const fsDiscover = new DiscoverController();
 
-      send (payload, callback) {
-        setTimeout(() => {
-          callback(null, payload);
-        }, 10);
-      }
+      const spy = sandbox.spy(fsDiscover.logger, 'error');
+
+      fsDiscover.discover(__dirname);
+
+      setTimeout(() => {
+        expect(spy.called).to.be.false;
+
+        done();
+      }, 10);
+
+    } catch(e) {
+      done(e);
     }
 
-    const controller = new DiscoverController();
-    expect(controller).to.be.not.null;
-    expect(controller).to.be.a('Object');
-    controller.unschedule();
-
-    const stub = sandbox.stub(Kafka, 'getProducer');
-    stub.resolves(new MockKafkaProducer());
-    const queueSpy = sandbox.spy(controller.queue, 'remove');
-
-    controller.discoverExecutor(__filename);
-    controller.dequeue();
-
-    expect(queueSpy.called).to.be.true;
-    done();
   });
 
-  it('should process queue', done => {
-    class MockKafkaProducer {
-      on(action, callback) {
-        if(action === 'ready')
-          setTimeout(callback, 10);
+  it('should fail discovering current directory', done => {
+    const stub = sandbox.stub(FSUtility, 'readDir');
+    stub.rejects(new Error('ERROR!!'));
 
-      }
+    try {
 
-      send (payload, callback) {
-        setTimeout(() => {
-          callback(null, payload);
-        }, 10);
-      }
+      const fsDiscover = new DiscoverController();
+
+      const spy = sandbox.spy(fsDiscover.logger, 'error');
+
+      fsDiscover.discover(__dirname);
+
+      setTimeout(() => {
+        expect(spy.called).to.be.true;
+
+        done();
+      }, 10);
+
+    } catch(e) {
+      done(e);
     }
 
-    const controller = new DiscoverController();
-    expect(controller).to.be.not.null;
-    expect(controller).to.be.a('Object');
-    controller.unschedule();
-
-    const stub = sandbox.stub(Kafka, 'getProducer');
-    const mockKafkaProducer = new MockKafkaProducer()
-    stub.resolves(mockKafkaProducer);
-    const queueSpy = sandbox.spy(controller.queue, 'peek');
-    const procuderSpy = sandbox.spy(mockKafkaProducer, 'send');
-
-    controller.discoverExecutor(__filename);
-    controller.processQueue();
-    controller.unschedule();
-
-    setTimeout(() => {
-      expect(queueSpy.called).to.be.true;
-          expect(procuderSpy.called).to.be.true;
-
-          done();
-    }, 21);
-  });
-
-  it('should handle error when getting kafka producer', done => {
-    class MockKafkaProducer {
-      on(action, callback) {
-        if(action === 'ready')
-          setTimeout(callback, 10);
-
-      }
-
-      send (payload, callback) {
-        setTimeout(() => {
-          callback(null, payload);
-        }, 10);
-      }
-    }
-
-    const controller = new DiscoverController();
-    expect(controller).to.be.not.null;
-    expect(controller).to.be.a('Object');
-    controller.unschedule();
-
-    const stub = sandbox.stub(Kafka, 'getProducer');
-    const mockKafkaProducer = new MockKafkaProducer()
-    stub.rejects(new Error('Error!'));
-    const loggerSpy = sandbox.spy(controller.logger, 'error');
-
-    controller.discoverExecutor(__filename);
-    controller.processQueue();
-    controller.unschedule();
-
-    setTimeout(() => {
-      expect(loggerSpy.called).to.be.true;
-      done();  
-    }, 21);
-  });
-
-  
-  it('should handle when kafka producer gives error', done => {
-    class MockKafkaProducer {
-      on(action, callback) {
-        if(action === 'error')
-            callback(new Error('Error!'));
-      }
-
-      send (payload, callback) {
-        setTimeout(() => {
-          callback(null, payload);
-        }, 10);
-      }
-    }
-
-    const controller = new DiscoverController();
-    expect(controller).to.be.not.null;
-    expect(controller).to.be.a('Object');
-    controller.unschedule();
-
-    const stub = sandbox.stub(Kafka, 'getProducer');
-    const mockKafkaProducer = new MockKafkaProducer()
-    stub.resolves(mockKafkaProducer);
-    const loggerSpy = sandbox.spy(controller.logger, 'error');
-
-    controller.discoverExecutor(__filename);
-    controller.processQueue();
-    controller.unschedule();
-
-    setTimeout(() => {
-      expect(loggerSpy.called).to.be.true;
-      done();  
-    }, 21);
   });
 });

@@ -43,23 +43,14 @@ export class FSUtility {
 
   static isDirectory(path) {
     return new Promise((resolve, reject) => {
-      /* istanbul ignore else */
-      if(nodeFs.promises.lstat)
-        nodeFs
-          .promises
-          .lstat(path)
-          .then((stats) => {
-            if(stats.isDirectory())
-              return resolve(true);
-            resolve(false);
-          })
-          .catch((e) => reject(e));
-      else
-        nodeFs.lstat(path, (e, stats) => {
-          if(e)
-            return reject(e);
-          resolve(stats);
-        });
+      this
+        .getFileStats(path)
+        .then(stats => {
+          if(stats.isDirectory())
+            return resolve(true);
+          resolve(false);
+        })
+        .catch(reject);
     });
   }
 
@@ -85,6 +76,44 @@ export class FSUtility {
             return reject(e);
 
           handleFiles(files);
+        });
+    });
+  }
+
+  static getFileStats(path) {
+    return new Promise((resolve, reject) => {
+      /* istanbul ignore else */
+      if (nodeFs.promises.lstat)
+        nodeFs
+          .promises
+          .lstat(path)
+          .then(resolve)
+          .catch(reject);
+      else
+        nodeFs.lstat(path, (e, stats) => {
+          if (e)
+            return reject(e);
+
+          resolve(stats);
+        });
+    });
+  }
+
+  static readFile(path) {
+    return new Promise((resolve, reject) => {
+      /* istanbul ignore else */
+      if (nodeFs.promises.readFile)
+        nodeFs
+          .promises
+          .readFile(path)
+          .then(resolve)
+          .catch(reject);
+      else
+        nodeFs.readFile(path, (e, data) => {
+          if (e)
+            return reject(e);
+
+          resolve(data);
         });
     });
   }

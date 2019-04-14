@@ -40,7 +40,7 @@ describe('FSUtility', () => {
         expect(resolved).to.be.eq(nodePath.join(process.env.HOME, '~/'.slice(1)));
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should resolve current path', done => {
@@ -50,7 +50,7 @@ describe('FSUtility', () => {
         expect(resolved).to.be.eq('/etc');
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should check if current file exists', done => {
@@ -60,7 +60,7 @@ describe('FSUtility', () => {
         expect(path).to.be.eq(__filename);
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should check if non existent file exists', done => {
@@ -80,7 +80,7 @@ describe('FSUtility', () => {
         expect(result).to.be.true;
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should check if current file is directory', done => {
@@ -90,7 +90,7 @@ describe('FSUtility', () => {
         expect(result).to.be.false;
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should read files under directory', done => {
@@ -100,7 +100,7 @@ describe('FSUtility', () => {
         expect(paths.length).to.be.gt(0);
         done();
       })
-      .catch(e => done(e));
+      .catch(done);
   });
 
   it('should fail checking if current file is directory', done => {
@@ -130,5 +130,15 @@ describe('FSUtility', () => {
         done();
       });
   });
+
+  it('should read current file', done => {
+    FSUtility
+      .readFile(__filename)
+      .then((data) => {
+        expect(data).to.be.not.null;
+        done();
+      })
+      .catch(done);
+  })
 
 });
