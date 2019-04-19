@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+
 import fileType from 'file-type';
 import readChunk from 'read-chunk';
 import mime from 'mime';
@@ -16,6 +17,8 @@ export class FileType {
           return fileType(buffer);
         })
         .then((fileTypeResult) => {
+          const mimeVal = mime.getType(ext);
+
           if (ext === 'nef' && fileTypeResult.mime === 'image/tiff')
             return {
               ext: ext,
@@ -23,42 +26,34 @@ export class FileType {
             };
           else if (fileTypeResult)
             return fileTypeResult;
+          else if(mimeVal !== null && ext !== 'svg')
+            return {
+              ext: ext,
+              mime: mimeVal
+            };
+          else if(ext === 'svg')
+            return FSUtility
+              .readFile(path)
+              .then(isSvg)
+              .then((result) => {
+                console.log(result);
+                if (result)
+                  resolve({
+                    ext: ext,
+                    mime: mime.getType(ext)
+                  });
+                else
+                  resolve({
+                    ext: ext,
+                    mime: 'unknown'
+                  });
+              })
+              .catch(e => { throw e; });
           else
-            switch (ext) {
-              case 'js':
-                return {
-                  ext: ext,
-                  mime: mime.getType('js')
-                };
-              case 'json':
-                return {
-                  ext: ext,
-                  mime: mime.getType('json')
-                };
-              case 'svg':
-                return FSUtility
-                  .readFile(path)
-                  .then(isSvg)
-                  .then((result) => {
-                    console.log(result);
-                    if (result)
-                      resolve({
-                        ext: ext,
-                        mime: mime.getType(ext)
-                      });
-                    else
-                      resolve({
-                        ext: ext,
-                        mime: 'unknown'
-                      });
-                  })
-                  .catch(e => { throw e; });
-              default:
-                return {
-                  ext: ext,
-                  mime: 'unknown'
-                };
-            }
+            return {
+              ext: ext,
+              mime: 'unknown'
+            };
         })
         .then(resolve)
         .catch(reject);
