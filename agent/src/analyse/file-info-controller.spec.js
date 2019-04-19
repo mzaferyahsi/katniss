@@ -162,7 +162,7 @@ describe('File Info Controller tests', () => {
           expect(spyPaused.calledOnce).to.be.true;
           expect(spyResume.calledOnce).to.be.true;
           done();
-        }, 10);
+        }, 30);
       })
       .catch(done);
   });
