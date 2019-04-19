@@ -6,7 +6,7 @@ import config from '../config/config';
 import { Kafka } from '../kafka';
 import { FileType } from '../fs/file-type';
 import { FSUtility } from '../fs/utility';
-import md5 from 'md5';
+import md5File from 'md5-file/promise';
 import { GenericKafkaProducer } from '../kafka/generic-producer';
 
 export class FileInfoController {
@@ -108,8 +108,7 @@ export class FileInfoController {
           fileInfo.size = stats.size;
           return fileInfo.path;
         })
-        .then(FSUtility.readFile)
-        .then(md5)
+        .then(md5File)
         .then((hash) => {
           fileInfo.md5 = hash;
         })
