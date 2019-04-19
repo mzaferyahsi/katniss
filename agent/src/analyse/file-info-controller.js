@@ -8,6 +8,7 @@ import { FileType } from '../fs/file-type';
 import { FSUtility } from '../fs/utility';
 import md5File from 'md5-file/promise';
 import { GenericKafkaProducer } from '../kafka/generic-producer';
+import crypto from 'crypto';
 
 export class FileInfoController {
   constructor(options = { processInterval : 1000, initialize: true }) {
@@ -108,7 +109,12 @@ export class FileInfoController {
           fileInfo.size = stats.size;
           return fileInfo.path;
         })
-        .then(md5File)
+        .then((filePath) => {
+          if(fileInfo.type.mime !== 'directory')
+            return md5File(filePath);
+          else
+            return crypto.createHash('md5').update(filePath).digest('hex');
+        })
         .then((hash) => {
           fileInfo.md5 = hash;
         })
