@@ -1,7 +1,7 @@
 {
   "name": "katniss-agent",
   "script": "app/index.js",
-  "instances": "2",
+  "instances": "1",
   "env": {
     "PORT": 8080
   }
