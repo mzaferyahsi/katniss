@@ -8,9 +8,10 @@ COPY dist app/
 COPY package.json app/
 COPY pm2.json .
 COPY start.sh .
+COPY wait-for.sh .
 
 RUN chmod +x /start.sh
-RUN npm i -g wait-for
+RUN chmod +x /wait-for.sh
 
 ENV PORT=8001
 ENV NPM_CONFIG_LOGLEVEL warn

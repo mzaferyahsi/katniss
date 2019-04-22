@@ -12,7 +12,8 @@
     "ci-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp -f gulpfile.circleci.js test && nyc report --reporter=lcov > coverage.lcov && codecov",
     "travis-test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text gulp test && nyc report --reporter=lcov > coverage.lcov && codecov",
     "dev": "nodemon --exec \"npm test && npm run build && npm run serve-dev\" -e js,json --ignore dist",
-    "serve-dev": "node ./dist/index.js"
+    "serve-dev": "node ./dist/index.js",
+    "docker-start": "wait-for ${KAFKA_HOST}:9092 -- pm2-runtime start pm2.json"
   },
   "repository": "github.com:mzaferyahsi/katniss.git",
   "author": "M. Zafer Yahsi <https://github.com/mzaferyahsi>",
@@ -34,8 +35,7 @@
     "mime": "^2.4.2",
     "read-chunk": "^3.2.0",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2",
-    "wait-for": "^2.1.1"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
