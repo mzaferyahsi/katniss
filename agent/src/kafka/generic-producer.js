@@ -82,8 +82,9 @@ export class GenericKafkaProducer {
     if(!messages || messages && messages.length < 1)
       return;
 
+    // Partitioner type (default = 0, random = 1, cyclic = 2, keyed = 3, custom = 4), default 0
     Kafka
-      .getProducer()
+      .getProducer(null, 2)
       .then(producer => {
         /* istanbul ignore next */
         producer.on('error', (e) => {
