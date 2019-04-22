@@ -22,4 +22,4 @@ RUN cd app && npm install --production
 VOLUME [ "/app/config" ]
 EXPOSE 8001
 
-CMD [ "./start.sh" ]
+CMD [ "start.sh" ]
