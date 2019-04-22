@@ -16,11 +16,8 @@ export class Kafka {
   static getClient() {
     return new Promise((resolve, reject) => {
       try {
-        /* istanbul ignore else */
-        if(!Kafka.client)
-          Kafka.client = new KafkaClient({ kafkaHost: config.kafka.hosts, maxAsyncRequests: config.kafka.maxAsyncRequests });
-
-        resolve(Kafka.client);
+        const client = new KafkaClient({ kafkaHost: config.kafka.hosts, maxAsyncRequests: config.kafka.maxAsyncRequests });
+        resolve(client);
       } catch (e) {
         this.getLogger().error(e, e.stack);
         reject(e);
