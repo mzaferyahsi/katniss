@@ -10,6 +10,7 @@ COPY pm2.json .
 COPY start.sh .
 
 RUN chmod +x /start.sh
+RUN npm i -g wait-for
 
 ENV PORT=8001
 ENV NPM_CONFIG_LOGLEVEL warn
