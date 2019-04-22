@@ -10,7 +10,10 @@
       "files" : "katniss-files"
     },
     "consumerGroupId": "katniss-agent",
-    "producerInterval": 1000
+    "producer" : {
+      "interval": 1000,
+      "messageCount": 10
+    }
   },
   "log4js": {
     "appenders": {

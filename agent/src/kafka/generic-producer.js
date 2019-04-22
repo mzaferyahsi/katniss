@@ -20,7 +20,7 @@ export class GenericKafkaProducer {
     /* istanbul ignore else */
     if(!GenericKafkaProducer.scheduledJob)
       GenericKafkaProducer.scheduledJob = setInterval(GenericKafkaProducer.process.bind(GenericKafkaProducer),
-        GenericKafkaProducer.interval ? GenericKafkaProducer.interval : config.kafka.producerInterval);
+        GenericKafkaProducer.interval ? GenericKafkaProducer.interval : config.kafka.producer.interval);
   }
 
   static unschedule() {
@@ -54,7 +54,7 @@ export class GenericKafkaProducer {
   static dequeue() {
     const payload = [];
     let count = 0;
-    while(count < 100 && GenericKafkaProducer.queue.peek()) {
+    while(count < config.kafka.producer.messageCount && GenericKafkaProducer.queue.peek()) {
       GenericKafkaProducer.getLogger().debug(`Dequeueing ${JSON.stringify(GenericKafkaProducer.queue.peek())}`);
 
       const msg = GenericKafkaProducer.queue.remove();
