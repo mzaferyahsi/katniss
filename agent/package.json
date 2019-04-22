@@ -34,7 +34,8 @@
     "mime": "^2.4.2",
     "read-chunk": "^3.2.0",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "wait-for": "^2.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",

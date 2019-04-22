@@ -7,13 +7,17 @@ LABEL version=${APP_VERSION}
 COPY dist app/
 COPY package.json app/
 COPY pm2.json .
+COPY start.sh .
 
-ENV PORT=8080
+RUN chmod +x /start.sh
+
+ENV PORT=8001
 ENV NPM_CONFIG_LOGLEVEL warn
+ENV KAFKA_HOST=kafka
 
 RUN cd app && npm install --production
 
 VOLUME [ "/app/config" ]
-EXPOSE 8080
+EXPOSE 8001
 
-CMD [ "pm2-runtime", "start", "pm2.json" ]
+CMD [ "./start.sh" ]
