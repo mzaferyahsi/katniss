@@ -7,9 +7,12 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { HeartBeatRoute } from './api/heartbeat';
 import { DiscoveriesRoute } from './api/discoveries';
+import {FileInfoController} from "./analyse/file-info-controller";
 
 const app = express(),
   port = 8001 || process.env.PORT;
+
+app.controllers = {};
 
 const logger = log4js.getLogger();
 log4js.configure(config.log4js);
@@ -45,6 +48,7 @@ app.use('/api', router);
 
 app.listen(port, () => {
   logger.info(`App started at ${port}`);
+  app.controllers.fileInfoController = new FileInfoController();
 });
 
 require('events').EventEmitter.defaultMaxListeners = 0;

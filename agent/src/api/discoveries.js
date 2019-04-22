@@ -3,7 +3,7 @@
 import * as log4js from 'log4js';
 import { DiscoverController } from '../discover/discover-controller';
 import uuid from 'uuid/v4';
-import { FileInfoController } from '../analyse/file-info-controller';
+// import { FileInfoController } from '../analyse/file-info-controller';
 
 export class DiscoveriesRoute {
 
@@ -22,9 +22,9 @@ export class DiscoveriesRoute {
     if(!this.discoverController)
       this.discoverController = new DiscoverController();
 
-    /* istanbul ignore else */
-    if(!this.fileInfoController)
-      this.fileInfoController = new FileInfoController();
+    // /* istanbul ignore else */
+    // if(!this.fileInfoController)
+    //   this.fileInfoController = new FileInfoController();
 
     return this.discoverController;
   }
