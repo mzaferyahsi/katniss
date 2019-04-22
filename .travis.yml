@@ -29,11 +29,7 @@ install:
   - cd ../
 
 script:
-  - cd agent && npm run travis-test
+  - cd agent && npm run travis-test && ./build-image.sh && ./push-image.sh
   - cd ../
-  - cd app && npm run travis-test
-  - cd ../
-  - cd agent && ./build-image.sh && ./push-image.sh
-  - cd ../
-  - cd app && ./build-image.sh && ./push-image.sh
+  - cd app && npm run travis-test && ./build-image.sh && ./push-image.sh
   - cd ../
